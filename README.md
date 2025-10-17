@@ -1,5 +1,5 @@
 # Pawmodoro - Your Pomodoro Pet for Productivity
-DubHacks '2025 Project
+##### DubHacks '2025 Project
 Pawmodoro is a Chrome extension that helps you stay focused and organized by combining a Pomodoro timer, with an adorable virtual pet and a built-in to-do list.  
 Stay productive, interact with your pet, and gamify your study sessions, all in one playful browser extension.
 
