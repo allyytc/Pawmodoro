@@ -1,14 +1,2 @@
 /* Base styles for Pawmodoro extension */
-body {
-  margin: 10;
-  font-family: system-ui, Arial, sans-serif;
-  background-color: #ffffff;
-  color: #213547;
-}
-
-div{
-  box-sizing: border-box;
-  width: 100%;
-  border:5px solid red;
-  float:left;
-}
+@import "tailwindcss";
