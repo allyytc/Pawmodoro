@@ -3,8 +3,15 @@
     "version": "1.0.0",
     "name": "pawmodoro extension",
     "description": "Pawmodoro is a Chrome extension that helps you stay focused and organized by combining a Pomodoro timer with an adorable virtual pet and a built-in to-do list. Stay productive, interact with your pet, and gamify your study sessions, all in one playful browser extension.",
+    "permissions": ["tabs", "sidePanel", "storage", "scripting"],
     "action": {
-        "default_popup": "index.html"
+        "default_popup": "index.html",
+        "default_icon": {
+            "16": "images/IDLE.png",
+            "32": "images/IDLE.png",
+            "48": "images/IDLE.png",
+            "128": "images/IDLE.png"
+        }
     },
     "icons": {
         "16": "images/IDLE.png",
@@ -15,16 +22,11 @@
     "side_panel": {
         "default_path": "index.html"
     },
-        "background": {
+    "background": {
         "service_worker": "background.js"
     },
-    "permissions":[
-        "scripting",
-        "sidePanel"
-    ],
     "host_permissions": [
         "http://*/*",
         "https://*/*"
     ]
-    
 }
