@@ -81,7 +81,7 @@ export default function TodoList() {
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Add a new task..."
-                    className="flex-grow p-2 border border-gray-300 rounded-l-md text-gray-800 focus:outline-none"
+                    className="flex-grow p-2 border border-gray-300 rounded-l-md text-white focus:outline-none"
                 />
                 <button
                     onClick={handleAddTask}
