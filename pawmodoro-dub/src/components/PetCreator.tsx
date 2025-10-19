@@ -102,10 +102,10 @@ const PetCreator: React.FC = () => {
 
         try {
             // --- All of the Gemini API prompts for different pet states 
-            const happyPrompt = `Pixel art sprite of a happy, cute ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
-            const madPrompt = `Pixel art sprite of an angry, mad ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
-            const pettedPrompt = `Pixel art sprite of a human hand petting a cute, happy ${animalInput}. PNG with alpha channel transparency, no background, isolated on transparent.`;
-            const celebratePrompt = `Pixel art sprite of a happy, celebrating ${animalInput} with confetti, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
+            const happyPrompt = `Pixel art 64x64 sprite of a happy, cute ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
+            const madPrompt = `Pixel art 64x64 sprite of an angry, mad ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
+            const pettedPrompt = `Pixel art sprite of a human hand petting a cute, happy 64x64 pixel art${animalInput}. PNG with alpha channel transparency, no background, isolated on transparent.`;
+            const celebratePrompt = `Pixel art 64x64 sprite of a happy, celebrating ${animalInput} with confetti, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
             
             // --- Generate all images in parallel ---
             const [happyImgBase64, madImgBase64, pettedImgBase64, celebrateImgBase64] = await Promise.all([
