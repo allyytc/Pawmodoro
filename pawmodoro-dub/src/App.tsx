@@ -1,6 +1,8 @@
 import Timer from './components/timer';
 import TodoList from './components/todo_list';
 import { ShortBreakPhase } from './components/phase';
+import '../public/popup.css';
+import Phase from './components/phase';
 import Petcreator from './components/PetCreator';
 
 function App() {
@@ -44,6 +46,8 @@ function App() {
       <div>
         <ShortBreakPhase />
         <Timer />
+        <Petcreator />
+
       </div>
     </main>
   )
