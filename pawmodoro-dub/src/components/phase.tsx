@@ -1,14 +1,14 @@
 import '../../public/phase.css';
-export function PomodoroPhase() {
+export function StudyPhase() {
     return(
-        <div className="pomodoro-phase">
-            Pomodoro
+        <div className="study-phase">
+            Study
         </div>
     )
 }
-export function ShortBreakPhase() {
+export function BreakPhase() {
     return(
-        <div className="pomodoro-phase">
+        <div className="break-phase">
             Break
         </div>
     )
