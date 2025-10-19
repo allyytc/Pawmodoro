@@ -1,20 +1,7 @@
 /* Base styles for Pawmodoro extension */
 @import "tailwindcss";
-
-
-
 body {
   font-family: "Share Tech", sans-serif;
   background-color: #ffffff;
   color: #213547;
 }
-
-/* div{ 
-  box-sizing: border-box;
-  width: 380px;
-  height: 200px;
-  border:5px solid rgb(0, 0, 0);
-  float:left;
-}
-
-*/
