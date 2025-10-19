@@ -5,6 +5,7 @@ interface PetData {
     happyImg: string;
     madImg: string;
     petImg: string;
+    celebrateImg: string;
 }
 
 const PetCreator: React.FC = () => {
@@ -67,18 +68,21 @@ const PetCreator: React.FC = () => {
             const happyPrompt = `Pixel art spire of a happy, cute, ${animalInput}, please transparent background, no background, isolated on transparent, sitting pose, full body`;
             const madPrompt = `An angry, mad, pixel art sprite drawing of a ${animalInput},please  transparent background, no background, isolated on transparent, sitting pose, full body`;
             const pettedPrompt = `Pixel art sprite of a happy, cute ${animalInput} being petted, transparent background, no background, isolated on transparent, sitting pose, full body`;
+            const celebratePrompt = `A happy, party, celebrating, pixel art sprite drawing of ${animalInput}, please transparent background, no background, isolated on transparent, sitting pose, full body`;
             
-            const [happyImgBase64, madImgBase64, pettedImgBase64] = await Promise.all([
+            const [happyImgBase64, madImgBase64, pettedImgBase64, celebrateImgBase64] = await Promise.all([
                 generateImage(happyPrompt),
                 generateImage(madPrompt),
-                generateImage(pettedPrompt)
+                generateImage(pettedPrompt),
+                generateImage(celebratePrompt)
             ]);
             
             const petData: PetData = {
                 name: animalInput.charAt(0).toUpperCase() + animalInput.slice(1),
                 happyImg: `data:image/png;base64,${happyImgBase64}`,
                 madImg: `data:image/png;base64,${madImgBase64}`,
-                petImg: `data:image/png;base64,${pettedImgBase64}`
+                petImg: `data:image/png;base64,${pettedImgBase64}`,
+                celebrateImg: `data:image/png;base64,${celebrateImgBase64}`
             };
 
             chrome.storage.local.set({ pet: petData }, () => {

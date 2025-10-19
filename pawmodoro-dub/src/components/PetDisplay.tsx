@@ -6,6 +6,7 @@ interface PetData {
     happyImg: string;
     madImg: string;
     petImg: string;
+    celebrateImg?: string;
 }
 
 
@@ -21,6 +22,8 @@ const PetDisplay: React.FC = () => {
 
     // boolean for petted
     const [isPetted, setIsPetted] = useState(false);
+    // boolean for celebrating
+    const [isCelebrating, setIsCelebrating] = useState(false);
 
     // using local file for the audio
     const meowAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -57,6 +60,19 @@ const PetDisplay: React.FC = () => {
                 console.log("Status changed in PetDisplay! New status:", newStatus);
                 // When the status changes, we update our `isHappy` state, causing a re-render.
                 setIsHappy(newStatus);
+            }
+            
+            // Listen for celebration trigger
+            if (areaName === 'local' && changes.celebrating) {
+                const celebrating = changes.celebrating.newValue;
+                console.log("Celebration triggered!", celebrating);
+                if (celebrating) {
+                    setIsCelebrating(true);
+                    // Auto-hide celebration after 3 seconds
+                    setTimeout(() => {
+                        setIsCelebrating(false);
+                    }, 3000);
+                }
             }
         };
 
@@ -99,7 +115,15 @@ const PetDisplay: React.FC = () => {
     }
 
     // --- UI (JSX) ---
-    // The image source is now conditional, based on the `isHappy` state.
+    // The image source is now conditional, based on state priority: celebrating > petted > happy/mad
+    const currentImage = isCelebrating && pet.celebrateImg
+        ? pet.celebrateImg
+        : isPetted 
+        ? pet.petImg 
+        : isHappy 
+        ? pet.happyImg 
+        : pet.madImg;
+    
     return (
         <div className="flex flex-col items-center p-4">
             <h2 className="text-2xl font-bold text-white mb-2">{pet.name}</h2>
@@ -109,8 +133,8 @@ const PetDisplay: React.FC = () => {
                 title ={`Pet ${pet.name}`}
             >
                 <img
-                    src={isPetted ? pet.petImg : (isHappy ? pet.happyImg : pet.madImg)}
-                    alt={`${pet.name} is ${isHappy ? 'happy' : 'mad'}`}
+                    src={currentImage}
+                    alt={`${pet.name} is ${isCelebrating ? 'celebrating' : isPetted ? 'being petted' : isHappy ? 'happy' : 'mad'}`}
                     className="w-full h-full object-contain"
                 />
             </div>

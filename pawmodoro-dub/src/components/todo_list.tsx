@@ -27,9 +27,19 @@ export default function TodoList() {
 // function to toggle task completion
     const handleToggleTask = (id: number) => {
         setTasks(
-            tasks.map(task => 
-                task.id === id ? { ...task, completed: !task.completed } : task
-            )
+            tasks.map(task => {
+                if (task.id === id && !task.completed) {
+                    // Task is being completed! Trigger celebration
+                    console.log("Task completed! Celebrating...");
+                    chrome.storage.local.set({ celebrating: true }, () => {
+                        // Auto-remove celebration flag after 3 seconds
+                        setTimeout(() => {
+                            chrome.storage.local.remove('celebrating');
+                        }, 3000);
+                    });
+                }
+                return task.id === id ? { ...task, completed: !task.completed } : task;
+            })
         );
     };
 // function to enter key press
