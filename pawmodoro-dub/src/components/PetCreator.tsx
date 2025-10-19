@@ -107,7 +107,7 @@ const handleCreatePet = async () => {
 };
 
 return (
-    <div className="bg-slate-50 p-6 text-center w-80">
+     <div>
         <h1 className="text-xl font-bold text-gray-800">Create Your Study Buddy!</h1>
         <p className="text-gray-600 mt-2">What animal would you like as your pet?</p>
 
