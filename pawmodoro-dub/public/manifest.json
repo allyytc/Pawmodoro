@@ -18,6 +18,12 @@
         "storage",
         "tabs"
     ], 
+    "web_accessible_resources": [
+        {
+            "resources": [ "sounds/meow.wav" ],
+            "matches": [ "<all_urls>" ]
+        }
+    ],
     "icons": {
         "16": "images/goodicon.png",
         "32": "images/goodicon.png",
