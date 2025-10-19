@@ -62,8 +62,7 @@ export default function TodoList() {
                 return task.id === id ? { ...task, completed: !task.completed } : task;
             })
         );
-        // 5. Use the new save function here as well
-        saveTasks(updatedTasks);
+       
     };
 
     const handleKeyPress = (event: React.KeyboardEvent) => {
