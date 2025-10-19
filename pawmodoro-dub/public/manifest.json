@@ -4,7 +4,7 @@
     "name": "pawmodoro extension",
     "description": "Your friendly companion that keeps you focused while studying",
     "action": {
-        "default_popup": "popup.html",
+        "default_popup": "index.html",
         "default_icon": {
             "16": "images/goodicon.png",
             "32": "images/goodicon.png",

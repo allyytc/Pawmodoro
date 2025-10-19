@@ -1,15 +1,14 @@
 import Timer from './components/timer';
-import TodoList from './components/todo_list';
+import '../public/popup.css';
+import Phase from './components/phase';
 
 function App() {
 
   return (
-    <main className='w-80 p-4 bg-slate-50'>
+    <main className='w-80 p-4 bg-transparent-50'>
       <div>
+        <Phase />
         <Timer />
-      </div>
-      <div>
-        <TodoList />
       </div>
     </main>
   )
