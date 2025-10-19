@@ -55,8 +55,6 @@ export default function WebsiteManager() {
       <h2 className="font-semibold text-white text-lg mb-4">
         Manage Allowed Websites
       </h2>
-
-      {/* The content is now always visible */}
       <div>
         {/* Input section */}
         <div className="flex mb-4 text-white">

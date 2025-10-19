@@ -55,7 +55,7 @@ function App() {
       </div>
     );
   }
-  // POPUP VIEW - Compact design with cabin background
+  // POPUP VIEW
   import('../public/popup.css');
   
   return (

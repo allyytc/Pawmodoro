@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 interface TimerProps {
     layout?: 'horizontal' | 'vertical';
-    onSwitchTimer?: () => void; // Add callback prop
+    onSwitchTimer?: () => void; 
 }
 
 export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: TimerProps) {

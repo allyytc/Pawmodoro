@@ -3,17 +3,14 @@ import FiveTimer from './five-timer';
 
 // Define the props the component can accept
 interface TimerProps {
-  layout?: 'vertical' | 'horizontal'; // Layout can be horizontal (default) or vertical
+  layout?: 'vertical' | 'horizontal'; 
   onTimerChange?: (timerType: 'study' | 'break') => void; // Callback to notify parent of timer change
 }
-
-// Accept the props and set a default value for layout
 export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }: TimerProps) {
     const [seconds, setSeconds] = useState(1500); //25 mins
     const [isActive, setIsActive] = useState(false);
     const [activeView, setActiveView] = useState(false);
 
-    // --- All of your existing logic for saving and loading the timer remains the same ---
     useEffect(() => {
         chrome.storage.local.get(['twentyFiveTimerState'], (result) => {
             if (result.twentyFiveTimerState) {
@@ -78,14 +75,14 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
         
         setActiveView(true);
         if (onTimerChange) {
-            onTimerChange('break'); // Notify parent we're switching to break timer
+            onTimerChange('break'); 
         }
     };
 
     const twentyFiveView = () => {
         setActiveView(false);
         if (onTimerChange) {
-            onTimerChange('study'); // Notify parent we're switching to study timer
+            onTimerChange('study'); 
         }
     };
 
@@ -95,12 +92,8 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
 
     // Conditionally render the UI based on the layout prop
     if (layout === 'vertical') {
-        // --- vertical layout for your popup ---
         return (
             <div className="flex items-center justify-center p-4">
-                {/* 1. Changed `flex` to `flex-col` to stack buttons vertically.
-                  2. Changed `space-x-2` to `space-y-2` for vertical spacing.
-                */}
                 <div className="flex flex-col space-y-2 mr-4">
                     <button onClick={toggleTimer} className='px-4 py-2 bg-emerald-300 text-white rounded hover:bg-emerald-400 w-24'>
                         {isActive ? 'Pause' : 'Start'}
@@ -112,13 +105,11 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
                         Break
                     </button>
                 </div>
-                {/* Time display is to the right of the buttons */}
                 <h1 className="text-5xl text-white font-bold">{formatTime()}</h1>
             </div>
         );
     }
 
-    // --- OG horizontal layout for the side panel ---
     return (
         <div className="text-center p-4">
             <h1 className="text-6xl text-white font-bold mb-4">{formatTime()}</h1>
