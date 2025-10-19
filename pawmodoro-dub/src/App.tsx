@@ -1,7 +1,11 @@
 import Timer from './components/timer';
+import '../public/popup.css';
+import Phase from './components/phase';
+import Petcreator from './components/PetCreator';
+
 import TodoList from './components/todo_list';
 import { ShortBreakPhase } from './components/phase';
-import Petcreator from './components/PetCreator';
+
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -44,6 +48,7 @@ function App() {
       <div>
         <ShortBreakPhase />
         <Timer />
+        <Petcreator />
       </div>
     </main>
   )
