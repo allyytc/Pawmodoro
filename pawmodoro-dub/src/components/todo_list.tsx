@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"; // 1. Import useEffect
+// import react hooks
+import { useState, useEffect } from "react"; 
 
 // define task structure
 interface Task {
@@ -12,9 +13,7 @@ export default function TodoList() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [inputText, setInputText] = useState("");
 
-    // --- NEW: LOGIC FOR LOADING AND SAVING ---
-
-    // 2. Load saved tasks from Chrome storage when the component first loads
+//logic for loading and saving tasks
     useEffect(() => {
         if (chrome.storage && chrome.storage.local) {
             chrome.storage.local.get(['savedTasks'], (result) => {
@@ -25,14 +24,14 @@ export default function TodoList() {
         }
     }, []); // The empty array [] means this effect runs only once
 
-    // 3. Create a helper function to save tasks to storage AND update the state
+    //helper function to save tasks to storage and update the state
     const saveTasks = (newTasks: Task[]) => {
         setTasks(newTasks);
         chrome.storage.local.set({ savedTasks: newTasks });
     };
 
-    // --- UPDATED LOGIC FOR HANDLING USER ACTIONS ---
-
+    // functions to handle adding and toggling tasks
+    // add new task
     const handleAddTask = () => {
         if (inputText.trim() === "") return;
 
@@ -41,11 +40,10 @@ export default function TodoList() {
             text: inputText,
             completed: false,
         };
-        // 4. Use the new save function instead of just setTasks
         saveTasks([...tasks, newTask]);
         setInputText('');
     };
-
+    // toggle task completion and trigger celebration if completed
     const handleToggleTask = (id: number) => {
         setTasks(
             tasks.map(task => {
@@ -64,7 +62,7 @@ export default function TodoList() {
         );
        
     };
-
+    // handle enter key press in input box
     const handleKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === "Enter") {
             handleAddTask();

@@ -1,3 +1,4 @@
+//Import react hooks
 import React, { useState, useEffect } from 'react';
 
 export default function WebsiteManager() {
@@ -10,7 +11,6 @@ export default function WebsiteManager() {
   // State for the text in the input box
   const [inputText, setInputText] = useState('');
 
-  // --- LOGIC FOR LOADING AND SAVING ---
 
   // Load saved sites from Chrome storage when the component first loads
   useEffect(() => {
@@ -27,8 +27,8 @@ export default function WebsiteManager() {
     chrome.storage.local.set({ allowedSites: newSites });
   };
 
-  // --- LOGIC FOR HANDLING USER ACTIONS ---
-
+  // Functions to handle adding and removing sites
+  // Add new site
   const handleAddSite = () => {
     if (inputText.trim() === '' || sites.includes(inputText.trim())) {
       setInputText('');
@@ -39,35 +39,33 @@ export default function WebsiteManager() {
     setInputText(''); // Clear input after adding
   };
 
+  // Remove site
   const handleRemoveSite = (siteToRemove: string) => {
     const newSites = sites.filter(site => site !== siteToRemove);
     saveSites(newSites);
   };
   
+  // Handle enter key press in input box
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       handleAddSite();
     }
   };
 
-  // --- UI BLUEPRINT (JSX) ---
+  // UI plus functions
 
   return (
     <div className="p-4 bg-white/20 rounded-lg">
-      {/* This button is always visible and controls the accordion */}
-      <button
+      <button // button to toggle accordion open/closed
         onClick={() => setIsOpen(!isOpen)}
         className="w-full text-left font-semibold text-white text-lg p-2 rounded-md hover:bg-white/30"
       >
         Manage Allowed Websites {isOpen ? '▲' : '▼'}
       </button>
-
-      {/* This is the key part: The UI inside only renders if 'isOpen' is true */}
       {isOpen && (
         <div className="mt-4">
-          {/* Input section */}
           <div className="flex mb-4 text-white">
-            <input
+            <input // input box for new site
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -75,23 +73,22 @@ export default function WebsiteManager() {
               placeholder="e.g., notion.so"
               className="w-full p-2 border rounded-l-md text-gray-800 focus:outline-none"
             />
-            <button
+            <button // button to add new site
               onClick={handleAddSite}
               className="bg-blue-500 text-white px-4 rounded-r-md hover:bg-blue-600"
             >
               Add
             </button>
           </div>
-
-          {/* List of saved sites */}
-          <ul className="space-y-2 max-h-40 overflow-y-auto">
+    
+          <ul className="space-y-2 max-h-40 overflow-y-auto"> 
             {sites.map(site => (
               <li
                 key={site}
                 className="flex items-center justify-between bg-white/20 p-2 rounded-md"
               >
                 <span className="text-white">{site}</span>
-                <button
+                <button // button to remove site
                   onClick={() => handleRemoveSite(site)}
                   className="bg-red-500 text-white font-bold w-6 h-6 rounded-full hover:bg-red-600 flex items-center justify-center"
                 >
