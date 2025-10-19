@@ -53,11 +53,11 @@ export default function WebsiteManager() {
   // --- UI BLUEPRINT (JSX) ---
 
   return (
-    <div className="p-4 bg-white/10 rounded-lg">
+    <div className="p-4 bg-white/20 rounded-lg">
       {/* This button is always visible and controls the accordion */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-left font-semibold text-white text-lg p-2 rounded-md hover:bg-white/20"
+        className="w-full text-left font-semibold text-white text-lg p-2 rounded-md hover:bg-white/30"
       >
         Manage Allowed Websites {isOpen ? '▲' : '▼'}
       </button>

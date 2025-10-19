@@ -1,5 +1,8 @@
 /* Base styles for Pawmodoro extension */
 @import "tailwindcss";
+
+
+
 body {
   font-family: "Share Tech", sans-serif;
   background-color: #ffffff;

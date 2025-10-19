@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import Timer from './components/timer';
 import '../public/popup.css';
-import TodoList from './components/todo_list';
-import WebsiteManager from './components/WebsiteManager';
+
 import { ShortBreakPhase } from './components/phase';
 import PetPage from './components/PetCreaterPage';
 import PetDisplay from './components/PetDisplay';
+import SettingsPanel from './components/switchButton';
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -48,11 +48,9 @@ function App() {
         </div>
 
         <div >
-          <TodoList />
+          <SettingsPanel />
         </div>
-        <div>
-          <WebsiteManager />
-        </div>
+        
       </div>
     );
   }
