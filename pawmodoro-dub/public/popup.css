@@ -1,6 +1,6 @@
 body{
-    width: 350px;
-    height: 250px;
+    width: max-content;
+    height: max-content;
     background-image: url("images/cabin.png");
     background-position: center;
     background-size: cover;

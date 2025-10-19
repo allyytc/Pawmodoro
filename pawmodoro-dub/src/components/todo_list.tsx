@@ -83,7 +83,7 @@ export default function TodoList() {
             </div>
 
             <ul className="space-y-2 max-h-40 overflow-y-auto">
-                {tasks.map(task => (
+                {tasks.map(task => (    
                     <li
                         key={task.id}
                         onClick={() => handleToggleTask(task.id)}
