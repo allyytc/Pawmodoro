@@ -1,8 +1,15 @@
 import '../../public/phase.css';
-export default function Phase() {
+export function PomodoroPhase() {
     return(
-        <div className="default-box">
+        <div className="pomodoro-phase">
             Pomodoro
+        </div>
+    )
+}
+export function ShortBreakPhase() {
+    return(
+        <div className="pomodoro-phase">
+            Break
         </div>
     )
 }
