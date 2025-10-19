@@ -120,12 +120,12 @@ const PetCreator: React.FC = () => {
         <div className="bg-transparent p-6 text-center w-80">
             <h1 className="text-xl font-bold text-white">Create Your Study Buddy!</h1>
             <p className="text-white mt-2">What animal would you like as your pet?</p>
-            <input
+            <input 
                 type="text"
                 value={animalInput}
                 onChange={(e) => setAnimalInput(e.target.value)}
                 placeholder="e.g., fox, panda, owl"
-                className="w-full p-2 mt-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className=" w-full p-2 mt-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 disabled={isLoading}
             />
             <button
