@@ -33,12 +33,12 @@ const PetDisplay: React.FC = () => {
     }
 
 
-    // --- EFFECTS TO LOAD DATA AND LISTEN FOR CHANGES ---
+    // Load Data and Look for Changes
 
-    // This useEffect runs ONCE to load the pet's images and the initial on-task status.
+    // Runs once to load the pet's images and the initial on-task status.
     useEffect(() => {
 
-        // We ask for two things from storage at the same time.
+        // Ask for two things from storage at the same time.
         chrome.storage.local.get(['pet', 'onTaskStatus'], (result) => {
             if (result.pet) {
                 setPet(result.pet);
@@ -49,16 +49,16 @@ const PetDisplay: React.FC = () => {
             }
             setIsLoading(false);
         });
-    }, []); // Empty array `[]` means this runs only once when the component mounts.
+    }, []); 
 
-    // This useEffect sets up a LISTENER that waits for the background script's messages.
+    // useEffect sets up a LISTENER that waits for the background script's messages.
     useEffect(() => {
         const handleStorageChange = (changes: { [key: string]: chrome.storage.StorageChange }, areaName: string) => {
             // We only care about changes to our 'onTaskStatus' key in local storage.
             if (areaName === 'local' && changes.onTaskStatus) {
                 const newStatus = changes.onTaskStatus.newValue;
                 console.log("Status changed in PetDisplay! New status:", newStatus);
-                // When the status changes, we update our `isHappy` state, causing a re-render.
+                // When the status changes, we update our `isHappy` state for re-render.
                 setIsHappy(newStatus);
             }
             
@@ -76,10 +76,10 @@ const PetDisplay: React.FC = () => {
             }
         };
 
-        // We subscribe our function to Chrome's storage change event.
+        // Subscribe our function to Chrome's storage change event.
         chrome.storage.onChanged.addListener(handleStorageChange);
 
-        // This is a cleanup function. When the component disappears, we unsubscribe the listener.
+        // This is a cleanup function. When the component disappears, unsubscribe the listener.
         return () => {
             chrome.storage.onChanged.removeListener(handleStorageChange);
         };
@@ -110,12 +110,12 @@ const PetDisplay: React.FC = () => {
     }
 
     if (!pet) {
-        // If no pet exists, we don't show anything. Your PetCreator component will handle this case.
+        // If no pet exists,  don't show anything
         return null;
     }
 
-    // --- UI (JSX) ---
-    // The image source is now conditional, based on state priority: celebrating > petted > happy/mad
+    //     UI  
+    // The image source is conditional, based on state priority: celebrating > petted > happy/mad
     const currentImage = isCelebrating && pet.celebrateImg
         ? pet.celebrateImg
         : isPetted 
