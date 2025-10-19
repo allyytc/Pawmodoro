@@ -1,94 +1,89 @@
-// src/components/timer.tsx
-// A simple timer component for the Pawmodoro extension
-
-// import react hooks
 import { useState, useEffect } from 'react';
 
-// gives component memory with use state, start at 25 min, we edit set seconds
-export default function Timer() {
-    const [seconds, setSeconds] = useState(1500); // 25 minutes
+// Define the props the component can accept
+interface TimerProps {
+  layout?: 'vertical' | 'horizontal'; // Layout can be horizontal (default) or vertical
+}
 
-    // more useState variables to remeber if time is running or paused
+// Accept the props and set a default value for layout
+export default function Timer({ layout = 'horizontal' }: TimerProps) {
+    const [seconds, setSeconds] = useState(1500);
     const [isActive, setIsActive] = useState(false);
 
-    // NEW: This useEffect hook runs ONLY ONCE when the component first loads.
-    // Its purpose is to load the timer's state from storage.
+    // --- All of your existing logic for saving and loading the timer remains the same ---
     useEffect(() => {
-        // We ask Chrome's storage for the 'timerState' object we saved.
         chrome.storage.local.get(['timerState'], (result) => {
-            // Check if there is any saved state at all.
             if (result.timerState) {
                 const savedState = result.timerState;
-                console.log("Found saved timer state:", savedState);
-
-                // NEW: This is the crucial part. We calculate how much time has passed
-                // since the popup was last closed.
                 const timeElapsedInSeconds = (Date.now() - savedState.timestamp) / 1000;
-
-                // NEW: If the timer was running when the user closed the popup...
                 if (savedState.isActive) {
-                    // ...we subtract the elapsed time from the saved seconds.
                     const newSeconds = Math.max(0, savedState.seconds - timeElapsedInSeconds);
                     setSeconds(newSeconds);
                 } else {
-                    // NEW: If the timer was paused, we just load the saved time directly.
                     setSeconds(savedState.seconds);
                 }
-
-                // NEW: We also restore whether the timer was active or paused.
                 setIsActive(savedState.isActive);
             }
         });
-    }, []); // NEW: The empty array `[]` ensures this effect runs only once on mount.
+    }, []);
 
-    // NEW: This useEffect is our "auto-save" feature.
-    // It runs every single time the `seconds` or `isActive` state changes.
     useEffect(() => {
-        // We create an object that holds all the important information.
         const timerState = {
             seconds: seconds,
             isActive: isActive,
-            // NEW: We include a timestamp. This is essential for calculating
-            // how much time has passed while the popup was closed.
             timestamp: Date.now()
         };
-        // We save this complete state object to Chrome's storage.
         chrome.storage.local.set({ timerState });
-    }, [seconds, isActive]); // NEW: This effect depends on `seconds` and `isActive`.
+    }, [seconds, isActive]);
 
-    // set up 1 second interval to count down, useEffect to handle side effects
     useEffect(() => {
         let interval: number | undefined = undefined;
-        // We only want the interval to run IF the timer is active and has time left
         if (isActive && seconds > 0) {
             interval = setInterval(() => {
                 setSeconds(currentSeconds => currentSeconds - 1);
             }, 1000);
         }
-        // Stop old timer to reset 
         return () => { clearInterval(interval) };
-
     }, [isActive, seconds]);
 
-    // function to toggle buttons
     const toggleTimer = () => {
         setIsActive(!isActive);
     };
 
-    // reset function to get back to 25 minutes
     const resetTimer = () => {
         setIsActive(false);
         setSeconds(1500);
-    }
+    };
 
-    // turns number of seconds into MM:SS format
     const formatTime = () => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
     };
 
-    // ui and connects functions
+    // Conditionally render the UI based on the layout prop
+    if (layout === 'vertical') {
+        // --- vertical layout for your popup ---
+        return (
+            <div className="flex items-center justify-center p-4">
+                {/* 1. Changed `flex` to `flex-col` to stack buttons vertically.
+                  2. Changed `space-x-2` to `space-y-2` for vertical spacing.
+                */}
+                <div className="flex flex-col space-y-2 mr-4">
+                    <button onClick={toggleTimer} className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 w-24'>
+                        {isActive ? 'Pause' : 'Start'}
+                    </button>
+                    <button onClick={resetTimer} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-24">
+                        Reset
+                    </button>
+                </div>
+                {/* Time display is to the right of the buttons */}
+                <h1 className="text-5xl text-white font-bold">{formatTime()}</h1>
+            </div>
+        );
+    }
+
+    // --- OG horizontal layout for the side panel ---
     return (
         <div className="text-center p-4">
             <h1 className="text-6xl text-white font-bold mb-4">{formatTime()}</h1>
@@ -96,8 +91,9 @@ export default function Timer() {
                 <button onClick={toggleTimer} className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600'>
                     {isActive ? 'Pause' : 'Start'}
                 </button>
-
-                <button onClick={resetTimer} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Reset</button>
+                <button onClick={resetTimer} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                    Reset
+                </button>
             </div>
         </div>
     );

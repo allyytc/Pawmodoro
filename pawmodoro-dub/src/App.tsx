@@ -59,8 +59,8 @@ function App() {
     <main className='w-80 p-4 bg-transparent'>
       <div>
         <ShortBreakPhase />
-        <Timer />
-        <PetDisplay />
+        <Timer layout='vertical' />
+        <div className='scale-75 relative top-[-25]'><PetDisplay /></div>
       </div>
     </main>
   );

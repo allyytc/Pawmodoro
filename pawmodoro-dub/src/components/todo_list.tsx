@@ -1,17 +1,38 @@
-import{ useState } from "react";
+import { useState, useEffect } from "react"; // 1. Import useEffect
+
 // define task structure
 interface Task {
     id: number;
     text: string;
     completed: boolean;
-
 }
 
 export default function TodoList() {
-// state to hold tasks and input text
+    // state to hold tasks and input text
     const [tasks, setTasks] = useState<Task[]>([]);
     const [inputText, setInputText] = useState("");
-// function to add new task
+
+    // --- NEW: LOGIC FOR LOADING AND SAVING ---
+
+    // 2. Load saved tasks from Chrome storage when the component first loads
+    useEffect(() => {
+        if (chrome.storage && chrome.storage.local) {
+            chrome.storage.local.get(['savedTasks'], (result) => {
+                if (result.savedTasks) {
+                    setTasks(result.savedTasks);
+                }
+            });
+        }
+    }, []); // The empty array [] means this effect runs only once
+
+    // 3. Create a helper function to save tasks to storage AND update the state
+    const saveTasks = (newTasks: Task[]) => {
+        setTasks(newTasks);
+        chrome.storage.local.set({ savedTasks: newTasks });
+    };
+
+    // --- UPDATED LOGIC FOR HANDLING USER ACTIONS ---
+
     const handleAddTask = () => {
         if (inputText.trim() === "") return;
 
@@ -20,11 +41,11 @@ export default function TodoList() {
             text: inputText,
             completed: false,
         };
-// update tasks and clear input
-        setTasks([...tasks, newTask]);
+        // 4. Use the new save function instead of just setTasks
+        saveTasks([...tasks, newTask]);
         setInputText('');
     };
-// function to toggle task completion
+
     const handleToggleTask = (id: number) => {
         setTasks(
             tasks.map(task => {
@@ -41,50 +62,52 @@ export default function TodoList() {
                 return task.id === id ? { ...task, completed: !task.completed } : task;
             })
         );
+        // 5. Use the new save function here as well
+        saveTasks(updatedTasks);
     };
-// function to enter key press
+
     const handleKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === "Enter") {
             handleAddTask();
         }
     };
 
-// ui for todo list plus functions
+    // ui for todo list plus functions
     return (
-        <div className="p-0 bg-white/20 rounded-lg">
+        <div className="p-4 bg-white/20 rounded-lg">
             <h2 className="text-2xl text-white font-bold mb-4">To-Do List</h2>
-            
-            <div className="mb-4 flex text-white"> 
+
+            <div className="mb-4 flex">
                 <input
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Add a new task..."
-                    className="flex-grow p-2 border border-gray-300 rounded-l"
+                    className="flex-grow p-2 border border-gray-300 rounded-l-md text-gray-800 focus:outline-none"
                 />
                 <button
                     onClick={handleAddTask}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-r hover:bg-blue-600"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600"
                 >
                     Add
                 </button>
             </div>
 
-            <ul className="space-y-2">
-                {tasks.map(task => (
-                    <li 
-                    key = {task.id}
-                    onClick={() => handleToggleTask(task.id)}
-                    className="flex items-center justify-between bg-white p-2 rounded shadow"
+            <ul className="space-y-2 max-h-40 overflow-y-auto">
+                {tasks.map(task => (    
+                    <li
+                        key={task.id}
+                        onClick={() => handleToggleTask(task.id)}
+                        className="flex items-center bg-white/20 p-2 rounded-md cursor-pointer hover:bg-white/30"
                     >
-                        <input 
+                        <input
                             type="checkbox"
                             readOnly
                             checked={task.completed}
-                            className="mr-2 h-5 w-5 accent-amber-300"
+                            className="mr-3 h-5 w-5 accent-green-500"
                         />
-                        <span className={task.completed ? "line-through text-gray-500" : ""}>
+                        <span className={task.completed ? "line-through text-gray-300" : "text-white"}>
                             {task.text}
                         </span>
                     </li>
