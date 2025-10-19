@@ -1,5 +1,5 @@
-.pomodoro-phase{
-    background-color: rgb(118, 81, 51,0.8);
+.study-phase{
+    background-color: rgba(248, 0, 124, 0.8);
     margin: 10px auto 0 auto;
     display: block;
     width: 270px;
@@ -11,7 +11,7 @@
     color: white;
 }
 
-.shortBreak-phase{
+.break-phase{
     background-color: rgba(93, 136, 86, 0.8);
     margin: 10px auto 0 auto;
     display: block;

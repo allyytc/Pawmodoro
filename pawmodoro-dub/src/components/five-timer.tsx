@@ -1,20 +1,35 @@
 import { useState, useEffect } from 'react';
 
-// Define the props the component can accept
 interface TimerProps {
-  layout?: 'vertical' | 'horizontal'; // Layout can be horizontal (default) or vertical
+    layout?: 'horizontal' | 'vertical';
+    onSwitchTimer?: () => void; // Add callback prop
 }
 
-// Accept the props and set a default value for layout
-export default function Timer({ layout = 'horizontal' }: TimerProps) {
-    const [seconds, setSeconds] = useState(1500);
+export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: TimerProps) {
+    
+    const handleSwitchToStudy = () => {
+        // Stop and reset the 5-minute timer before switching
+        setIsActive(false);
+        setSeconds(300);
+        chrome.storage.local.set({ 
+            fiveTimerState: {
+                seconds: 300,
+                isActive: false,
+                timestamp: Date.now()
+            }
+        });
+        
+        if (onSwitchTimer) {
+            onSwitchTimer();
+        }
+    };
+    const [seconds, setSeconds] = useState(300); //5 mins
     const [isActive, setIsActive] = useState(false);
 
-    //storae for timer state using chrome storage
     useEffect(() => {
-        chrome.storage.local.get(['timerState'], (result) => {
-            if (result.timerState) {
-                const savedState = result.timerState;
+        chrome.storage.local.get(['fiveTimerState'], (result) => {
+            if (result.fiveTimerState) {
+                const savedState = result.fiveTimerState;
                 const timeElapsedInSeconds = (Date.now() - savedState.timestamp) / 1000;
                 if (savedState.isActive) {
                     const newSeconds = Math.max(0, savedState.seconds - timeElapsedInSeconds);
@@ -33,7 +48,7 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
             isActive: isActive,
             timestamp: Date.now()
         };
-        chrome.storage.local.set({ timerState });
+        chrome.storage.local.set({ fiveTimerState: timerState });
     }, [seconds, isActive]);
 
     useEffect(() => {
@@ -52,7 +67,7 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
 // Reset the timer to 25 minutes
     const resetTimer = () => {
         setIsActive(false);
-        setSeconds(1500);
+        setSeconds(300); // Reset to 5 minutes
     };
 // Format the time in MM:SS and use only integers
     const formatTime = () => {
@@ -66,9 +81,6 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
         // vertical layout
         return (
             <div className="flex items-center justify-center p-4">
-                {/* 1. Changed `flex` to `flex-col` to stack buttons vertically.
-                  2. Changed `space-x-2` to `space-y-2` for vertical spacing.
-                */}
                 <div className="flex flex-col space-y-2 mr-4">
                     <button onClick={toggleTimer} className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 w-24'>
                         {isActive ? 'Pause' : 'Start'}
@@ -76,8 +88,12 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
                     <button onClick={resetTimer} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-24">
                         Reset
                     </button>
+                    {onSwitchTimer && (
+                        <button onClick={handleSwitchToStudy} className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-24'>
+                            Study
+                        </button>
+                    )}
                 </div>
-                {/* Time display is to the right of the buttons */}
                 <h1 className="text-5xl text-white font-bold">{formatTime()}</h1>
             </div>
         );
@@ -94,6 +110,11 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
                 <button onClick={resetTimer} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
                     Reset
                 </button>
+                {onSwitchTimer && (
+                    <button onClick={handleSwitchToStudy} className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
+                        Study
+                    </button>
+                )}
             </div>
         </div>
     );
