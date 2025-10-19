@@ -1,0 +1,15 @@
+.default-box{
+    background-color: rgb(118, 81, 51,0.8);
+    margin: 10px auto 0 auto;
+    display: block;
+    width: 270px;
+    height: 50px;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-size: 40px;
+    font-family: "Share Tech", sans-serif;
+    color: white;
+}
+.default-box:hover{
+    background-color: rgb(118, 81, 51);
+}
