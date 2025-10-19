@@ -1,15 +1,15 @@
 {
     "manifest_version": 3,
     "version": "1.0.0",
-    "name": "pawmodoro extension",
-    "description": "Your friendly companion that keeps you focused while studying",
+    "name": "Pawmadoro: Study Pet",
+    "description": "Create your own friendly companion that keeps you focused while studying",
     "action": {
         "default_popup": "index.html?view=popup",
         "default_icon": {
-            "16": "images/goodicon.png",
-            "32": "images/goodicon.png",
-            "48": "images/goodicon.png",
-            "128": "images/goodicon.png"
+            "16": "images/noodle.png",
+            "32": "images/noodle.png",
+            "48": "images/noodle.png",
+            "128": "images/noodle.png"
         }
     },
     "permissions":[
@@ -25,10 +25,10 @@
         }
     ],
     "icons": {
-        "16": "images/goodicon.png",
-        "32": "images/goodicon.png",
-        "48": "images/goodicon.png",
-        "128": "images/goodicon.png"
+        "16": "images/noodle.png",
+        "32": "images/noodle.png",
+        "48": "images/noodle.png",
+        "128": "images/noodle.png"
     },
     "side_panel": {
         "default_path": "index.html?view=sidepanel"

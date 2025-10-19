@@ -13,11 +13,9 @@ const PetCreator: React.FC = () => {
     const [animalInput, setAnimalInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-    // This state holds the pet data loaded from storage, if it exists.
     const [savedPet, setSavedPet] = useState<PetData | null>(null);
 
-    // --- EFFECT TO LOAD SAVED PET ---
-    // This runs once when the component first loads to check for a pet.
+    // EFFECT TO LOAD SAVED PET ---
     useEffect(() => {
         if (chrome.storage && chrome.storage.local) {
             chrome.storage.local.get(['pet'], (result) => {
@@ -27,9 +25,47 @@ const PetCreator: React.FC = () => {
                 }
             });
         }
-    }, []); // Empty array ensures this runs only once on mount.
+    }, []);
 
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+    // --- Background Removal Function ---
+    const removeCheckerboardBackground = (base64Image: string): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = `data:image/png;base64,${base64Image}`;
+            
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return resolve(base64Image);
+
+                ctx.drawImage(img, 0, 0);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                // Will start loop to look for 'fake' backgrounds colors (grey and light grey)
+
+                for (let i = 0; i < data.length; i += 4) {
+                    const red = data[i];
+                    const green = data[i + 1];
+                    const blue = data[i + 2];
+
+                    const isWhite = red > 240 && green > 240 && blue > 240;
+                    const isLightGrey = red > 190 && red < 215 && green > 190 && green < 215 && blue > 190 && blue < 215;
+
+                    if (isWhite || isLightGrey) {
+                        data[i + 3] = 0; // Make transparent
+                    }
+                }
+                ctx.putImageData(imageData, 0, 0);
+                resolve(canvas.toDataURL('image/png').split(',')[1]);
+            };
+            img.onerror = () => reject(new Error('Image failed to load for background removal.'));
+        });
+    };
 
     const generateImage = async (prompt: string): Promise<string> => {
         if (!apiKey) throw new Error("API Key is missing. Check your .env file.");
@@ -65,31 +101,48 @@ const PetCreator: React.FC = () => {
         setError('');
 
         try {
-            const happyPrompt = `Pixel art spire of a happy, cute, ${animalInput}, please transparent background, no background, isolated on transparent, sitting pose, full body`;
-            const madPrompt = `An angry, mad, pixel art sprite drawing of a ${animalInput},please  transparent background, no background, isolated on transparent, sitting pose, full body`;
-            const pettedPrompt = `Pixel art sprite of a happy, cute ${animalInput} being petted, transparent background, no background, isolated on transparent, sitting pose, full body`;
-            const celebratePrompt = `A happy, party, celebrating, pixel art sprite drawing of ${animalInput}, please transparent background, no background, isolated on transparent, sitting pose, full body`;
+            // --- All of the Gemini API prompts for different pet states 
+            const happyPrompt = `Pixel art sprite of a happy, cute ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
+            const madPrompt = `Pixel art sprite of an angry, mad ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
+            const pettedPrompt = `Pixel art sprite of a human hand petting a cute, happy ${animalInput}. PNG with alpha channel transparency, no background, isolated on transparent.`;
+            const celebratePrompt = `Pixel art sprite of a happy, celebrating ${animalInput} with confetti, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
             
+            // --- Generate all images in parallel ---
             const [happyImgBase64, madImgBase64, pettedImgBase64, celebrateImgBase64] = await Promise.all([
                 generateImage(happyPrompt),
                 generateImage(madPrompt),
                 generateImage(pettedPrompt),
                 generateImage(celebratePrompt)
             ]);
+
+            // Run Transparency Removal Function to all images
+
+            const [happyClean, madClean, pettedClean, celebrateClean] = await Promise.all([
+                removeCheckerboardBackground(happyImgBase64),
+                removeCheckerboardBackground(madImgBase64),
+                removeCheckerboardBackground(pettedImgBase64),
+                removeCheckerboardBackground(celebrateImgBase64)
+            ]);
+
+            // Prepare Pet Data and Send to Chrome Storage
             
             const petData: PetData = {
                 name: animalInput.charAt(0).toUpperCase() + animalInput.slice(1),
-                happyImg: `data:image/png;base64,${happyImgBase64}`,
-                madImg: `data:image/png;base64,${madImgBase64}`,
-                petImg: `data:image/png;base64,${pettedImgBase64}`,
-                celebrateImg: `data:image/png;base64,${celebrateImgBase64}`
+                happyImg: `data:image/png;base64,${happyClean}`,
+                madImg: `data:image/png;base64,${madClean}`,
+                petImg: `data:image/png;base64,${pettedClean}`,
+                celebrateImg: `data:image/png;base64,${celebrateClean}`
             };
+
+            // chrome storage set
 
             chrome.storage.local.set({ pet: petData }, () => {
                 console.log("Pet data saved successfully!", petData);
-                // Update the state to switch the view to the new pet.
                 setSavedPet(petData);
             });
+           
+            // catch any errors and display message
+
         } catch (err) {
             console.error("Pet creation failed:", err);
             setError(err instanceof Error ? err.message : 'An unknown error occurred.');
@@ -98,16 +151,19 @@ const PetCreator: React.FC = () => {
         }
     };
     
-    // --- CONDITIONAL RENDERING ---
-    // If a pet is saved in our state, show the display UI.
+    // Displays The Saved Pet! 
+
     if (savedPet) {
         return (
             <div className="bg-transparent p-6 text-center w-80">
-                <h1 className="text-xl font-bold text-black ">Your Study Buddy</h1>
+                <h1 className="text-xl font-bold text-black ">Your Study Buddy</h1> 
                 <h2 className="text-lg font-semibold text-blue-600">{savedPet.name}</h2>
                 <div className="w-40 h-40 mx-auto my-4 rounded-xl flex items-center justify-center overflow-hidden shadow-inner">
                     <img src={savedPet.happyImg} alt={`Your pet, ${savedPet.name}`} className="w-full h-full object-contain" />
                 </div>
+
+                {/* this button will save the pet to chrome */}
+
                 <button
                     onClick={() => {
                         console.log('Pet saved, navigate to home');
@@ -121,7 +177,8 @@ const PetCreator: React.FC = () => {
         );
     }
 
-    // Otherwise, show the creation form UI.
+     // UI for creating the pet
+
     return (
         <div className="bg-transparent p-6 text-center w-80">
             <h1 className="text-xl font-bold text-black">Create Your Study Buddy!</h1>
