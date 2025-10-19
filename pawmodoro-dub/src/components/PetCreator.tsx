@@ -90,11 +90,6 @@ const PetCreator: React.FC = () => {
         }
     };
     
-    // Allows the user to go back to the creation screen.
-    // const handleCreateNew = () => {
-    //     setSavedPet(null);
-    // };
-
     // --- CONDITIONAL RENDERING ---
     // If a pet is saved in our state, show the display UI.
     if (savedPet) {
