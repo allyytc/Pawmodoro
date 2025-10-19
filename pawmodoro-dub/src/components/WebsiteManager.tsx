@@ -71,7 +71,7 @@ export default function WebsiteManager() {
               onChange={(e) => setInputText(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="e.g., notion.so"
-              className="w-full p-2 border rounded-l-md text-gray-800 focus:outline-none"
+              className="w-full p-2 border rounded-l-md text-white focus:outline-none"
             />
             <button // button to add new site
               onClick={handleAddSite}
