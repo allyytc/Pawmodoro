@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import Timer from './components/timer';
-
+import '../public/popup.css';
 // import TodoList from './components/todo_list';
 // import WebsiteManager from './components/WebsiteManager';
-import '../public/popup.css';
 import { ShortBreakPhase } from './components/phase';
+import PetPage from './components/PetCreaterPage';
 import PetDisplay from './components/PetDisplay';
 import SettingsPanel from './components/switchButton';
 
@@ -11,11 +12,23 @@ function App() {
   const urlParams = new URLSearchParams(window.location.search);
   const view = urlParams.get('view');
   const isSidePanel = view === 'sidepanel';
-  
-
-
+  const [hasPet, setHasPet] = useState(false);
+  useEffect(()=>{
+    chrome.storage.local.get(['pet'], (result)=>{
+      if (result.pet){
+        setHasPet(true);
+      }
+      else{
+        setHasPet(false);
+      }
+    })
+  },[]
+  )
   // SIDE PANEL VIEW 
   if (isSidePanel) {
+    if (hasPet===false){
+      return <PetPage />;
+    }
     return (
       <div 
         className="min-h-screen p-8"
@@ -42,9 +55,7 @@ function App() {
       </div>
     );
   }
-
   // POPUP VIEW - Compact design with cabin background
-  import('../public/popup.css');
   
   return (
     <main className='w-80 p-4 bg-transparent'>
@@ -54,7 +65,7 @@ function App() {
         <PetDisplay />
       </div>
     </main>
-  )
-}
+  );
 
-export default App
+}
+export default App;

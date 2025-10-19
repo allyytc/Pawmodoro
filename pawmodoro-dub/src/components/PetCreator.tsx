@@ -91,25 +91,28 @@ const PetCreator: React.FC = () => {
     };
     
     // Allows the user to go back to the creation screen.
-    const handleCreateNew = () => {
-        setSavedPet(null);
-    };
+    // const handleCreateNew = () => {
+    //     setSavedPet(null);
+    // };
 
     // --- CONDITIONAL RENDERING ---
     // If a pet is saved in our state, show the display UI.
     if (savedPet) {
         return (
             <div className="bg-transparent p-6 text-center w-80">
-                <h1 className="text-xl font-bold text-white ">Your Study Buddy</h1>
+                <h1 className="text-xl font-bold text-black ">Your Study Buddy</h1>
                 <h2 className="text-lg font-semibold text-blue-600">{savedPet.name}</h2>
                 <div className="w-40 h-40 mx-auto my-4 rounded-xl flex items-center justify-center overflow-hidden shadow-inner">
                     <img src={savedPet.happyImg} alt={`Your pet, ${savedPet.name}`} className="w-full h-full object-contain" />
                 </div>
                 <button
-                    onClick={handleCreateNew}
+                    onClick={() => {
+                        console.log('Pet saved, navigate to home');
+                        window.location.reload();
+                    }}
                     className="w-full py-2 mt-2 text-white font-semibold bg-gray-500 rounded-lg shadow-md hover:bg-gray-600"
                 >
-                    Create a New Pet
+                    SAVE
                 </button>
             </div>
         );
@@ -118,8 +121,8 @@ const PetCreator: React.FC = () => {
     // Otherwise, show the creation form UI.
     return (
         <div className="bg-transparent p-6 text-center w-80">
-            <h1 className="text-xl font-bold text-white">Create Your Study Buddy!</h1>
-            <p className="text-white mt-2">What animal would you like as your pet?</p>
+            <h1 className="text-xl font-bold text-black">Create Your Study Buddy!</h1>
+            <p className="text-black mt-2">What animal would you like as your pet?</p>
             <input 
                 type="text"
                 value={animalInput}
