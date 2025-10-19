@@ -1,5 +1,5 @@
 import{ useState } from "react";
-
+// define task structure
 interface Task {
     id: number;
     text: string;
@@ -8,10 +8,10 @@ interface Task {
 }
 
 export default function TodoList() {
-
+// state to hold tasks and input text
     const [tasks, setTasks] = useState<Task[]>([]);
     const [inputText, setInputText] = useState("");
-
+// function to add new task
     const handleAddTask = () => {
         if (inputText.trim() === "") return;
 
@@ -20,10 +20,11 @@ export default function TodoList() {
             text: inputText,
             completed: false,
         };
-
+// update tasks and clear input
         setTasks([...tasks, newTask]);
         setInputText('');
     };
+// function to toggle task completion
     const handleToggleTask = (id: number) => {
         setTasks(
             tasks.map(task => 
@@ -31,14 +32,14 @@ export default function TodoList() {
             )
         );
     };
-
+// function to enter key press
     const handleKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === "Enter") {
             handleAddTask();
         }
     };
 
-
+// ui for todo list plus functions
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-4">To-Do List</h2>
