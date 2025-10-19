@@ -20,7 +20,7 @@ export default function WebsiteManager() {
       }
     });
   }, []); // The empty array [] means this effect runs only once
-
+  
   // Function to save the list to Chrome storage
   const saveSites = (newSites: string[]) => {
     setSites(newSites);
@@ -66,7 +66,7 @@ export default function WebsiteManager() {
       {isOpen && (
         <div className="mt-4">
           {/* Input section */}
-          <div className="flex mb-4">
+          <div className="flex mb-4 text-white">
             <input
               type="text"
               value={inputText}
