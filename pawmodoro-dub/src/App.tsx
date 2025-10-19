@@ -44,6 +44,8 @@ function App() {
       <div>
         <ShortBreakPhase />
         <Timer />
+        <Petcreator />
+
       </div>
     </main>
   )
