@@ -1,9 +1,8 @@
 import Timer from './components/timer';
-import '../public/popup.css';
-import Phase from './components/phase';
 import Petcreator from './components/PetCreator';
-
 import TodoList from './components/todo_list';
+import WebsiteManager from './components/WebsiteManager';
+import '../public/popup.css';
 import { ShortBreakPhase } from './components/phase';
 
 
@@ -24,17 +23,20 @@ function App() {
           backgroundPosition: 'center'
         }}
       >
-        <div className="bg-white/90 rounded-lg p-6 shadow-xl mb-6">
+        <div >
           <ShortBreakPhase />
           <Timer />
         </div>
 
-        <div className="bg-white/90 rounded-lg p-6 shadow-xl mb-6">
+        <div >
           <Petcreator />
         </div>
 
-        <div className="bg-white/90 rounded-lg p-6 shadow-xl">
+        <div >
           <TodoList />
+        </div>
+        <div>
+          <WebsiteManager />
         </div>
       </div>
     );
