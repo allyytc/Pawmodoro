@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import Timer from './components/timer';
-import '../public/popup.css';
-
 import { ShortBreakPhase } from './components/phase';
 import PetPage from './components/PetCreaterPage';
 import PetDisplay from './components/PetDisplay';
@@ -55,6 +53,7 @@ function App() {
     );
   }
   // POPUP VIEW - Compact design with cabin background
+  import('../public/popup.css');
   
   return (
     <main className='w-80 p-4 bg-transparent'>

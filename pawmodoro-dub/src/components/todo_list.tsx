@@ -47,8 +47,20 @@ export default function TodoList() {
     };
 
     const handleToggleTask = (id: number) => {
-        const updatedTasks = tasks.map(task =>
-            task.id === id ? { ...task, completed: !task.completed } : task
+        setTasks(
+            tasks.map(task => {
+                if (task.id === id && !task.completed) {
+                    // Task is being completed! Trigger celebration
+                    console.log("Task completed! Celebrating...");
+                    chrome.storage.local.set({ celebrating: true }, () => {
+                        // Auto-remove celebration flag after 3 seconds
+                        setTimeout(() => {
+                            chrome.storage.local.remove('celebrating');
+                        }, 3000);
+                    });
+                }
+                return task.id === id ? { ...task, completed: !task.completed } : task;
+            })
         );
         // 5. Use the new save function here as well
         saveTasks(updatedTasks);
