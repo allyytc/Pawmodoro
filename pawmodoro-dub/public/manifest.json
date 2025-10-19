@@ -14,7 +14,9 @@
     },
     "permissions":[
         "scripting",
-        "sidePanel"
+        "sidePanel",
+        "storage",
+        "tabs"
     ], 
     "icons": {
         "16": "images/goodicon.png",
