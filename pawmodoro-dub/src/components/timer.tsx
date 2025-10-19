@@ -10,7 +10,7 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
     const [seconds, setSeconds] = useState(1500);
     const [isActive, setIsActive] = useState(false);
 
-    // --- All of your existing logic for saving and loading the timer remains the same ---
+    //storae for timer state using chrome storage
     useEffect(() => {
         chrome.storage.local.get(['timerState'], (result) => {
             if (result.timerState) {
@@ -26,7 +26,7 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
             }
         });
     }, []);
-
+// Save timer state to Chrome storage whenever seconds or isActive changes
     useEffect(() => {
         const timerState = {
             seconds: seconds,
@@ -45,16 +45,16 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
         }
         return () => { clearInterval(interval) };
     }, [isActive, seconds]);
-
+// Toggle between starting and pausing the timer
     const toggleTimer = () => {
         setIsActive(!isActive);
     };
-
+// Reset the timer to 25 minutes
     const resetTimer = () => {
         setIsActive(false);
         setSeconds(1500);
     };
-
+// Format the time in MM:SS and use only integers
     const formatTime = () => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
@@ -63,7 +63,7 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
 
     // Conditionally render the UI based on the layout prop
     if (layout === 'vertical') {
-        // --- vertical layout for your popup ---
+        // vertical layout
         return (
             <div className="flex items-center justify-center p-4">
                 {/* 1. Changed `flex` to `flex-col` to stack buttons vertically.
@@ -83,7 +83,7 @@ export default function Timer({ layout = 'horizontal' }: TimerProps) {
         );
     }
 
-    // --- OG horizontal layout for the side panel ---
+    //OG horizontal layout for the side panel
     return (
         <div className="text-center p-4">
             <h1 className="text-6xl text-white font-bold mb-4">{formatTime()}</h1>
