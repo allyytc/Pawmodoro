@@ -82,14 +82,14 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
         return (
             <div className="flex items-center justify-center p-4">
                 <div className="flex flex-col space-y-2 mr-4">
-                    <button onClick={toggleTimer} className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 w-24'>
+                    <button onClick={toggleTimer} className='px-4 py-2 bg-emerald-200 text-white rounded hover:bg-emerald-300 w-24'>
                         {isActive ? 'Pause' : 'Start'}
                     </button>
-                    <button onClick={resetTimer} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-24">
+                    <button onClick={resetTimer} className="px-4 py-2 bg-rose-300 text-white rounded hover:bg-rose-400 w-24">
                         Reset
                     </button>
                     {onSwitchTimer && (
-                        <button onClick={handleSwitchToStudy} className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-24'>
+                        <button onClick={handleSwitchToStudy} className='px-4 py-2 bg-sky-200 text-white rounded hover:bg-sky-300 w-24'>
                             Study
                         </button>
                     )}
@@ -104,14 +104,14 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
         <div className="text-center p-4">
             <h1 className="text-6xl text-white font-bold mb-4">{formatTime()}</h1>
             <div className="flex justify-center space-x-4 mt-4">
-                <button onClick={toggleTimer} className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600'>
+                <button onClick={toggleTimer} className='px-4 py-2 bg-emerald-300 text-white rounded hover:bg-emerald-400'>
                     {isActive ? 'Pause' : 'Start'}
                 </button>
-                <button onClick={resetTimer} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                <button onClick={resetTimer} className="px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-500">
                     Reset
                 </button>
                 {onSwitchTimer && (
-                    <button onClick={handleSwitchToStudy} className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
+                    <button onClick={handleSwitchToStudy} className='px-4 py-2 bg-sky-300 text-white rounded hover:bg-sky-400'>
                         Study
                     </button>
                 )}

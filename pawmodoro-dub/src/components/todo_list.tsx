@@ -85,7 +85,7 @@ export default function TodoList() {
                 />
                 <button
                     onClick={handleAddTask}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600"
+                    className="px-4 py-2 bg-sky-300 text-white rounded-r-md hover:bg-sky-400"
                 >
                     Add
                 </button>
@@ -102,7 +102,7 @@ export default function TodoList() {
                             type="checkbox"
                             readOnly
                             checked={task.completed}
-                            className="mr-3 h-5 w-5 accent-green-500"
+                            className="mr-3 h-5 w-5 accent-emerald-200"
                         />
                         <span className={task.completed ? "line-through text-gray-300" : "text-white"}>
                             {task.text}
