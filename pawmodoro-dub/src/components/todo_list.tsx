@@ -41,7 +41,7 @@ export default function TodoList() {
 
 // ui for todo list plus functions
     return (
-        <div className="p-4">
+        <div className="p-0 bg-white/20 rounded-lg">
             <h2 className="text-2xl text-white font-bold mb-4">To-Do List</h2>
             
             <div className="mb-4 flex text-white"> 

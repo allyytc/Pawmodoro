@@ -1,15 +1,18 @@
 import Timer from './components/timer';
-// import Petcreator from './components/PetCreator';
-import TodoList from './components/todo_list';
-import WebsiteManager from './components/WebsiteManager';
+
+// import TodoList from './components/todo_list';
+// import WebsiteManager from './components/WebsiteManager';
 import '../public/popup.css';
 import { ShortBreakPhase } from './components/phase';
 import PetDisplay from './components/PetDisplay';
+import SettingsPanel from './components/switchButton';
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
   const view = urlParams.get('view');
   const isSidePanel = view === 'sidepanel';
+  
+
 
   // SIDE PANEL VIEW 
   if (isSidePanel) {
@@ -33,11 +36,9 @@ function App() {
         </div>
 
         <div >
-          <TodoList />
+          <SettingsPanel />
         </div>
-        <div>
-          <WebsiteManager />
-        </div>
+        
       </div>
     );
   }
