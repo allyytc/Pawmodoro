@@ -12,7 +12,10 @@
             "128": "images/goodicon.png"
         }
     },
-    
+    "permissions":[
+        "scripting",
+        "sidePanel"
+    ], 
     "icons": {
         "16": "images/goodicon.png",
         "32": "images/goodicon.png",
