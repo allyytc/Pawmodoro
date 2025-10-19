@@ -100,7 +100,7 @@ const PetCreator: React.FC = () => {
     if (savedPet) {
         return (
             <div className="bg-transparent p-6 text-center w-80">
-                <h1 className="text-xl font-bold text-black-800">Your Study Buddy</h1>
+                <h1 className="text-xl font-bold text-white ">Your Study Buddy</h1>
                 <h2 className="text-lg font-semibold text-blue-600">{savedPet.name}</h2>
                 <div className="w-40 h-40 mx-auto my-4 rounded-xl flex items-center justify-center overflow-hidden shadow-inner">
                     <img src={savedPet.happyImg} alt={`Your pet, ${savedPet.name}`} className="w-full h-full object-contain" />
@@ -121,14 +121,14 @@ const PetCreator: React.FC = () => {
     // Otherwise, show the creation form UI.
     return (
         <div className="bg-transparent p-6 text-center w-80">
-            <h1 className="text-xl font-bold text-black-800">Create Your Study Buddy!</h1>
-            <p className="text-black-600 mt-2">What animal would you like as your pet?</p>
-            <input
+            <h1 className="text-xl font-bold text-white">Create Your Study Buddy!</h1>
+            <p className="text-white mt-2">What animal would you like as your pet?</p>
+            <input 
                 type="text"
                 value={animalInput}
                 onChange={(e) => setAnimalInput(e.target.value)}
                 placeholder="e.g., fox, panda, owl"
-                className="w-full p-2 mt-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className=" w-full p-2 mt-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 disabled={isLoading}
             />
             <button

@@ -84,14 +84,14 @@ export default function Timer() {
     // turns number of seconds into MM:SS format
     const formatTime = () => {
         const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
+        const remainingSeconds = Math.floor(seconds % 60);
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
     };
 
     // ui and connects functions
     return (
         <div className="text-center p-4">
-            <h1 className="text-6xl font-bold mb-4">{formatTime()}</h1>
+            <h1 className="text-6xl text-white font-bold mb-4">{formatTime()}</h1>
             <div className="flex justify-center space-x-4 mt-4">
                 <button onClick={toggleTimer} className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600'>
                     {isActive ? 'Pause' : 'Start'}

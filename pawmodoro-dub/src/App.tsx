@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import Timer from './components/timer';
 import '../public/popup.css';
-//import Phase from './components/phase';
-// import Petcreator from './components/PetCreator';
 import TodoList from './components/todo_list';
+import WebsiteManager from './components/WebsiteManager';
 import { ShortBreakPhase } from './components/phase';
 import PetPage from './components/PetCreaterPage';
-
+import PetDisplay from './components/PetDisplay';
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -39,13 +38,20 @@ function App() {
           backgroundPosition: 'center'
         }}
       >
-        <div className="bg-white/90 rounded-lg p-6 shadow-xl mb-6">
+        <div >
           <ShortBreakPhase />
           <Timer />
         </div>
 
-        <div className="bg-white/90 rounded-lg p-6 shadow-xl">
+        <div >
+          <PetDisplay />
+        </div>
+
+        <div >
           <TodoList />
+        </div>
+        <div>
+          <WebsiteManager />
         </div>
       </div>
     );
@@ -57,6 +63,7 @@ function App() {
       <div>
         <ShortBreakPhase />
         <Timer />
+        <PetDisplay />
       </div>
     </main>
   );
