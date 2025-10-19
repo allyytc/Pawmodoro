@@ -187,7 +187,7 @@ const PetCreator: React.FC = () => {
                 type="text"
                 value={animalInput}
                 onChange={(e) => setAnimalInput(e.target.value)}
-                placeholder="e.g., fox, panda, owl"
+                placeholder="e.g., fox, dog, dragon"
                 className=" w-full p-2 mt-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 disabled={isLoading}
             />
