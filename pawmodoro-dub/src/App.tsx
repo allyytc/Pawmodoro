@@ -4,7 +4,7 @@ import TodoList from './components/todo_list';
 import WebsiteManager from './components/WebsiteManager';
 import '../public/popup.css';
 import { ShortBreakPhase } from './components/phase';
-
+import PetDisplay from './components/PetDisplay';
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -29,7 +29,7 @@ function App() {
         </div>
 
         <div >
-          <Petcreator />
+          <PetDisplay />
         </div>
 
         <div >
