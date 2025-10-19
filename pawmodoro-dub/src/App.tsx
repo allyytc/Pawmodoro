@@ -1,5 +1,5 @@
 import Timer from './components/timer';
-import Petcreator from './components/PetCreator';
+// import Petcreator from './components/PetCreator';
 import TodoList from './components/todo_list';
 import WebsiteManager from './components/WebsiteManager';
 import '../public/popup.css';
@@ -50,7 +50,7 @@ function App() {
       <div>
         <ShortBreakPhase />
         <Timer />
-        <Petcreator />
+        <PetDisplay />
       </div>
     </main>
   )
