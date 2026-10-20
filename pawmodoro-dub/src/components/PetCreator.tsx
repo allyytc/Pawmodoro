@@ -9,13 +9,11 @@ interface PetData {
 }
 
 const PetCreator: React.FC = () => {
-    // --- STATE ---
     const [animalInput, setAnimalInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
     const [savedPet, setSavedPet] = useState<PetData | null>(null);
 
-    // EFFECT TO LOAD SAVED PET ---
     useEffect(() => {
         if (chrome.storage && chrome.storage.local) {
             chrome.storage.local.get(['pet'], (result) => {
@@ -29,7 +27,7 @@ const PetCreator: React.FC = () => {
 
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-    // --- Background Removal Function ---
+    // Imagen fills the backdrop with white and light grey instead of real alpha.
     const removeCheckerboardBackground = (base64Image: string): Promise<string> => {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -46,8 +44,6 @@ const PetCreator: React.FC = () => {
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
-                // Will start loop to look for 'fake' backgrounds colors (grey and light grey)
-
                 for (let i = 0; i < data.length; i += 4) {
                     const red = data[i];
                     const green = data[i + 1];
@@ -57,7 +53,7 @@ const PetCreator: React.FC = () => {
                     const isLightGrey = red > 190 && red < 215 && green > 190 && green < 215 && blue > 190 && blue < 215;
 
                     if (isWhite || isLightGrey) {
-                        data[i + 3] = 0; // Make transparent
+                        data[i + 3] = 0;
                     }
                 }
                 ctx.putImageData(imageData, 0, 0);
@@ -101,21 +97,17 @@ const PetCreator: React.FC = () => {
         setError('');
 
         try {
-            // Imagen prompts for each pet state
             const happyPrompt = `Pixel art sprite of a happy, cute ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
             const madPrompt = `Pixel art sprite of an angry, mad ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
             const pettedPrompt = `Pixel art sprite of a human hand petting a cute, happy pixel art${animalInput}. PNG with alpha channel transparency, no background, isolated on transparent.`;
             const celebratePrompt = `Pixel art sprite of a happy, celebrating ${animalInput} with confetti, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
             
-            // --- Generate all images in parallel ---
             const [happyImgBase64, madImgBase64, pettedImgBase64, celebrateImgBase64] = await Promise.all([
                 generateImage(happyPrompt),
                 generateImage(madPrompt),
                 generateImage(pettedPrompt),
                 generateImage(celebratePrompt)
             ]);
-
-            // Run Transparency Removal Function to all images
 
             const [happyClean, madClean, pettedClean, celebrateClean] = await Promise.all([
                 removeCheckerboardBackground(happyImgBase64),
@@ -124,8 +116,6 @@ const PetCreator: React.FC = () => {
                 removeCheckerboardBackground(celebrateImgBase64)
             ]);
 
-            // Prepare Pet Data and Send to Chrome Storage
-            
             const petData: PetData = {
                 name: animalInput.charAt(0).toUpperCase() + animalInput.slice(1),
                 happyImg: `data:image/png;base64,${happyClean}`,
@@ -147,8 +137,6 @@ const PetCreator: React.FC = () => {
         }
     };
     
-    // Displays The Saved Pet! 
-
     if (savedPet) {
         return (
             <div className="bg-transparent p-6 text-center w-80">
@@ -158,8 +146,7 @@ const PetCreator: React.FC = () => {
                     <img src={savedPet.happyImg} alt={`Your pet, ${savedPet.name}`} className="w-full h-full object-contain" />
                 </div>
 
-                {/* Pet is already saved; reload into the main view */}
-
+                {/* Reload so App can leave the creator and read the saved pet. */}
                 <button
                     onClick={() => {
                         console.log('Pet saved, navigate to home');
@@ -172,8 +159,6 @@ const PetCreator: React.FC = () => {
             </div>
         );
     }
-
-     // UI for creating the pet
 
     return (
         <div className="bg-transparent p-6 text-center w-80">

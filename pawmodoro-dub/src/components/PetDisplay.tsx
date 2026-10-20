@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// Define the structure of the pet data we expect to find in storage.
+// Shape of the pet record stored under the "pet" key.
 interface PetData {
     name: string;
     happyImg: string;
@@ -10,15 +10,10 @@ interface PetData {
 }
 
 const PetDisplay: React.FC = () => {
-    // --- STATE MANAGEMENT ---
-    // State to hold the pet's core data (name, images).
     const [pet, setPet] = useState<PetData | null>(null);
     const [isHappy, setIsHappy] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
-
-    // boolean for petted
     const [isPetted, setIsPetted] = useState(false);
-    // boolean for celebrating
     const [isCelebrating, setIsCelebrating] = useState(false);
 
     const meowAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -26,15 +21,12 @@ const PetDisplay: React.FC = () => {
         meowAudioRef.current = new Audio(chrome.runtime.getURL('sounds/meow2.wav'));
     }
 
-    // Load Data and Look for Changes
-
-    // Runs once to load the pet's images and the initial on-task status.
+    // Missing onTaskStatus stays happy (the useState default).
     useEffect(() => {
         chrome.storage.local.get(['pet', 'onTaskStatus'], (result) => {
             if (result.pet) {
                 setPet(result.pet);
             }
-            // If the onTaskStatus is saved, use it. Otherwise, default to true (happy).
             if (typeof result.onTaskStatus === 'boolean') {
                 setIsHappy(result.onTaskStatus);
             }
@@ -42,24 +34,20 @@ const PetDisplay: React.FC = () => {
         });
     }, []);
 
-    // Listen for storage changes (onTaskStatus from background.js, celebrating from the to-do list)
+    // background.js writes onTaskStatus. The to-do list writes "celebrating".
     useEffect(() => {
         const handleStorageChange = (changes: { [key: string]: chrome.storage.StorageChange }, areaName: string) => {
-            // We only care about changes to our 'onTaskStatus' key in local storage.
             if (areaName === 'local' && changes.onTaskStatus) {
                 const newStatus = changes.onTaskStatus.newValue;
                 console.log("Status changed in PetDisplay! New status:", newStatus);
-                // When the status changes, we update our `isHappy` state for re-render.
                 setIsHappy(newStatus);
             }
             
-            // Listen for celebration trigger
             if (areaName === 'local' && changes.celebrating) {
                 const celebrating = changes.celebrating.newValue;
                 console.log("Celebration triggered!", celebrating);
                 if (celebrating) {
                     setIsCelebrating(true);
-                    // Auto-hide celebration after 3 seconds
                     setTimeout(() => {
                         setIsCelebrating(false);
                     }, 3000);
@@ -67,7 +55,6 @@ const PetDisplay: React.FC = () => {
             }
         };
 
-        // Subscribe our function to Chrome's storage change event.
         chrome.storage.onChanged.addListener(handleStorageChange);
 
         return () => {
@@ -78,14 +65,14 @@ const PetDisplay: React.FC = () => {
     const handlePet = () => {
 
         if (meowAudioRef.current) {
-            meowAudioRef.current.currentTime = 0; // rewind to start
+            meowAudioRef.current.currentTime = 0;
             meowAudioRef.current.play();
         }
 
         setIsPetted(true);
         setTimeout(() => {
             setIsPetted(false);
-        }, 1000); // reset after 1 second
+        }, 1000);
     };
 
     if (isLoading) {
@@ -93,12 +80,10 @@ const PetDisplay: React.FC = () => {
     }
 
     if (!pet) {
-        // If no pet exists,  don't show anything
         return null;
     }
 
-    //     UI  
-    // The image source is conditional, based on state priority: celebrating > petted > happy/mad
+    // celebrating, then petting, then happy or mad
     const currentImage = isCelebrating && pet.celebrateImg
         ? pet.celebrateImg
         : isPetted 

@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import FiveTimer from './five-timer';
 
-// Define the props the component can accept
 interface TimerProps {
   layout?: 'vertical' | 'horizontal'; 
-  onTimerChange?: (timerType: 'study' | 'break') => void; // Callback to notify parent of timer change
+  onTimerChange?: (timerType: 'study' | 'break') => void;
 }
 export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }: TimerProps) {
-    const [seconds, setSeconds] = useState(1500); //25 mins
+    const [seconds, setSeconds] = useState(1500); // 25 minutes
     const [isActive, setIsActive] = useState(false);
     const [activeView, setActiveView] = useState(false);
 
@@ -15,6 +14,7 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
         chrome.storage.local.get(['twentyFiveTimerState'], (result) => {
             if (result.twentyFiveTimerState) {
                 const savedState = result.twentyFiveTimerState;
+                // If it was running, subtract the time spent while this view was closed.
                 const timeElapsedInSeconds = (Date.now() - savedState.timestamp) / 1000;
                 if (savedState.isActive) {
                     const newSeconds = Math.max(0, savedState.seconds - timeElapsedInSeconds);
@@ -27,6 +27,7 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
         });
     }, []);
 
+    // Write every tick so a later open can catch up.
     useEffect(() => {
         const timerState = {
             seconds: seconds,
@@ -55,6 +56,7 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
         setSeconds(1500);
     };
 
+    // Catch-up can leave a fraction. Show whole seconds.
     const formatTime = () => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
@@ -62,7 +64,7 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
     };
 
     const fiveView = () => {
-        // Stop and reset the 25-minute timer before switching
+        // Clear this countdown before the break timer takes over.
         setIsActive(false);
         setSeconds(1500);
         chrome.storage.local.set({ 
@@ -90,7 +92,6 @@ export default function TwentyfiveTimer({ layout = 'horizontal', onTimerChange }
         return <FiveTimer onSwitchTimer={twentyFiveView} layout={layout} />;
     }
 
-    // Conditionally render the UI based on the layout prop
     if (layout === 'vertical') {
         return (
             <div className="flex items-center justify-center p-4">

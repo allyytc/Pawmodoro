@@ -3,7 +3,7 @@ import TodoList from './todo_list';
 import WebsiteManager from './WebsiteManager';
 
 
-// allows for switching between todo list and website manager
+// Side-panel toggle between the to-do list and the allowed-sites list.
 
 const SettingsPanel: React.FC = () => {
     const [activeView, setActiveView] = useState('todos');

@@ -1,175 +1,199 @@
-# 🐾 Pawmodoro: Your Pomodoro Study Pet
+# Pawmodoro
 
-**A Chrome extension that pairs a Pomodoro timer and to-do list with an AI-generated pixel-art pet that reacts to whether you're staying on task.**
+**A Chrome extension that pairs a Pomodoro timer and a to-do list with a pixel-art pet that stays happy on the sites you meant to study on.**
 
-> Built at **DubHacks 2025** (October 2025).
+Built at [DubHacks 2025](https://dubhacks25.devpost.com/) in October 2025. This repository is the hackathon prototype: build it locally and load the unpacked extension in Chrome.
 
-**Links:** [Devpost (DubHacks 2025)](https://devpost.com/software/pawmodoro-178q6z) · [Demo video (YouTube)](https://www.youtube.com/watch?v=KWkfedqEbig)
+**Links:** [Devpost](https://devpost.com/software/pawmodoro-178q6z) · [Demo video](https://www.youtube.com/watch?v=KWkfedqEbig)
 
----
+[![Pawmodoro demo video](https://img.youtube.com/vi/KWkfedqEbig/maxresdefault.jpg)](https://www.youtube.com/watch?v=KWkfedqEbig)
 
-## Why we built it
+## What it does
 
-Pomodoro timers help you focus, but they can feel dry. Pawmodoro gives you a small companion to keep you company while you work. You describe an animal, the extension generates a custom pixel-art pet, and the pet's mood follows your browsing. It's happy on the sites you've marked as allowed, gets grumpy when you drift off, and celebrates when you finish a task.
+You describe an animal. Pawmodoro asks Google's Imagen model, through the Gemini API, for four pixel-art sprites: happy, mad, being petted, and celebrating. A canvas pass then clears white and light-grey pixels that Imagen draws in place of real transparency, and the sprites stay in `chrome.storage.local`.
+
+While a study view is open, a 25-minute timer counts down. A background service worker compares the active tab's hostname to a list of allowed sites. On a match the pet is happy. On any other `http` or `https` page it is mad. Click the pet and it meows (`sounds/meow2.wav`) and shows the petted sprite for one second. Checking off a task shows the celebrating sprite for three seconds.
+
+The Devpost page describes a wider design, including extra moods, focus streaks, and an end-of-session summary. Those pieces are not in this codebase. This repository implements the timer, the to-do list, the allowed-site check, and the four sprites.
 
 ## Features
 
-- **AI-generated pet.** Type any animal ("fox", "dragon", ...) and Pawmodoro asks Google's Imagen model (through the Gemini API) for four pixel-art sprites: *happy*, *mad*, *being petted*, and *celebrating*. A canvas pass then turns white and light-grey "fake transparency" pixels transparent, and the sprites are saved locally.
-- **Pomodoro timer.** A 25-minute study timer and a 5-minute break timer with Start/Pause, Reset, and Break/Study switching. A "Study" / "Break" banner shows the current phase. The timer state (time left, running or paused, timestamp) is saved, so when you reopen the popup or side panel it catches up on the time that passed.
-- **On-task tracking.** You keep a list of allowed websites. A background service worker checks the active tab's hostname each time you switch or load a tab. On an allowed site the pet is happy. On any other `http(s)` site it gets mad.
-- **Interactive pet.** Click the pet to play a meow sound and show the "petted" sprite for a second.
-- **To-do list.** Add tasks (button or Enter) and click one to mark it done. Finishing a task sets off a 3-second celebration animation for the pet.
-- **Two views:**
-  - **Toolbar popup:** a compact view with the timer, phase banner, and pet.
-  - **Chrome side panel:** the full experience, with pet creation (first run), the timer, the pet, and a toggle between the to-do list and the allowed-websites manager.
-- **Local-first storage.** Everything is kept in `chrome.storage.local` on your machine. There are no accounts and no backend.
+- **Custom pet.** Enter an animal ("fox", "dragon", ...) and generate four sprites in parallel. The pet's display name is the animal with a capital first letter.
+- **Pomodoro timer.** 25:00 study and 5:00 break, with Start/Pause, Reset, and Break/Study. Switching phases resets the timer you leave. A Study or Break banner tracks the phase. Time left, running or paused, and a timestamp are saved, so reopening the popup or side panel subtracts the time that passed.
+- **On-task check.** Allowed hostnames must match exactly (`www.notion.so` and `notion.so` are different). The service worker updates `onTaskStatus` when the active tab changes or finishes loading.
+- **To-do list.** Add a task with the button or Enter. Click a task to toggle it done. Completing a task sets `celebrating` so the pet can react.
+- **Two surfaces.**
+  - **Toolbar popup:** timer, phase banner, and pet, on the cabin background.
+  - **Side panel:** pet creation on first run, then the timer, the pet, and a toggle between the to-do list and **Manage Allowed Websites**, on the bedroom background.
+- **Local only.** Pet, tasks, allowed sites, and timer state live in `chrome.storage.local`. There is no account and no backend. Image prompts are the only thing sent to Gemini. Tab URLs stay on the machine.
+
+The side-panel background is `pawmodoro-dub/public/images/bedroom.png`, the popup background is `pawmodoro-dub/public/images/cabin.png`, and the toolbar icon is `pawmodoro-dub/public/images/noodle.png`. Chrome shows the extension as **Pawmadoro: Study Pet** (manifest version 1.0.0).
 
 ## Tech stack
 
 | Area | Tools |
 |---|---|
-| Extension platform | Chrome Extensions **Manifest V3** (action popup, side panel, background service worker) |
-| UI | **React 19** + **TypeScript 5.9** |
-| Styling | **Tailwind CSS v4** (`@tailwindcss/vite`) plus a few plain CSS files |
-| Build tooling | **Vite 7**, ESLint 9 (typescript-eslint, react-hooks) |
-| AI | Google **Gemini API / Imagen** (`imagen-3.0-generate-002`) for sprite generation |
+| Extension | Chrome Manifest V3: action popup, side panel, background service worker |
+| UI | React 19, TypeScript 5.9 |
+| Styling | Tailwind CSS v4 (`@tailwindcss/vite`), plus `phase.css` and `popup.css` |
+| Build | Vite 7, ESLint 9 (typescript-eslint, react-hooks, react-refresh) |
+| Pet art | Gemini API endpoint for `imagen-3.0-generate-002` |
 | Storage | `chrome.storage.local` |
 
-## Demo
+## Architecture
 
-[![Pawmodoro demo video](https://img.youtube.com/vi/KWkfedqEbig/maxresdefault.jpg)](https://www.youtube.com/watch?v=KWkfedqEbig)
+One Vite app serves both Chrome surfaces. `index.html?view=popup` and `index.html?view=sidepanel` land in `src/App.tsx`, which picks the layout. `public/` is copied into `dist/` as-is, including `manifest.json` and `background.js`.
 
-The repo already contains the art the UI uses: the side-panel background `pawmodoro-dub/public/images/bedroom.png`, the popup background `pawmodoro-dub/public/images/cabin.png`, and the extension icon `pawmodoro-dub/public/images/noodle.png`.
+```
+popup / side panel (React)
+        |  read + write chrome.storage.local
+        |     pet, savedTasks, allowedSites, timer state, celebrating
+        v
+background.js
+        |  active tab hostname vs allowedSites
+        v
+   onTaskStatus  --->  PetDisplay (happy or mad)
+
+PetCreator  --prompts only-->  Gemini Imagen API  -->  canvas cleanup  -->  pet
+```
+
+`PetDisplay` chooses a sprite in this order: celebrating, then being petted, then happy or mad.
 
 ## Project structure
 
 ```
 Pawmodoro/
 ├── README.md
-└── pawmodoro-dub/                 # The extension (Vite + React project)
-    ├── index.html                 # Single entry page; ?view=popup or ?view=sidepanel picks the UI
-    ├── vite.config.ts             # React + Tailwind plugins; builds index.html to dist/
+└── pawmodoro-dub/                  # Vite + React extension
+    ├── index.html                  # ?view=popup or ?view=sidepanel
+    ├── vite.config.ts
     ├── package.json
-    ├── public/                    # Copied as-is into dist/
-    │   ├── manifest.json          # MV3 manifest (popup, side panel, service worker, permissions)
-    │   ├── background.js          # Service worker: checks the active tab against allowed sites
-    │   ├── phase.css, popup.css   # Phase banner and popup background styles
-    │   ├── images/                # Backgrounds and extension icon
-    │   └── sounds/                # Meow sound effects
+    ├── .env.example                # VITE_GEMINI_API_KEY
+    ├── public/
+    │   ├── manifest.json
+    │   ├── background.js           # allowed-site check
+    │   ├── phase.css, popup.css
+    │   ├── images/
+    │   └── sounds/
     └── src/
-        ├── main.tsx               # React entry point
-        ├── App.tsx                # Picks the popup or side-panel layout
-        ├── index.css              # Tailwind import + base font
+        ├── main.tsx
+        ├── App.tsx                 # popup vs side panel
         └── components/
-            ├── PetCreaterPage.tsx # First-run wrapper around PetCreator
-            ├── PetCreator.tsx     # Gemini/Imagen sprite generation + background cleanup
-            ├── PetDisplay.tsx     # Pet mood, petting, and celebration states
-            ├── twentyfive-timer.tsx  # 25-min study timer (switches to the break timer)
-            ├── five-timer.tsx        # 5-min break timer
-            ├── phase.tsx          # "Study" / "Break" banners
-            ├── switchButton.tsx   # Toggles between the to-do list and website manager
-            ├── todo_list.tsx      # Tasks + celebration trigger
-            └── WebsiteManager.tsx # Allowed-sites list
+            ├── PetCreaterPage.tsx  # first-run wrapper
+            ├── PetCreator.tsx      # Imagen request + background cleanup
+            ├── PetDisplay.tsx
+            ├── twentyfive-timer.tsx
+            ├── five-timer.tsx
+            ├── phase.tsx
+            ├── switchButton.tsx    # to-do list vs allowed sites
+            ├── todo_list.tsx
+            └── WebsiteManager.tsx
 ```
 
 ## Getting started
 
 ### Prerequisites
 
-- **Node.js 20.19+ or 22.12+** (Vite 7 needs this) and npm
-- **Google Chrome** (or another Chromium browser that supports the Side Panel API)
-- A **Gemini API key** with image-generation access, for creating your pet. See [Known limitations](#known-limitations).
+- Node.js `^20.19.0` or `>=22.12.0` (the range Vite 7 declares) and npm
+- Google Chrome, or another Chromium browser with the Side Panel API
+- A Gemini API key if you want to create a pet. See [Limits](#limits).
 
-### 1. Install
+### Install
 
 ```bash
 git clone https://github.com/allyytc/Pawmodoro.git
 cd Pawmodoro/pawmodoro-dub
-npm install        # or: npm ci
+npm install
 ```
 
-### 2. Configure your API key
+`package-lock.json` is in the repo, so `npm ci` works too.
 
-Copy `.env.example` to `.env.local` and replace the placeholder with your Gemini API key:
+### API key
+
+Required environment variable: `VITE_GEMINI_API_KEY`
 
 ```bash
 cp .env.example .env.local
 ```
 
-`.env.example` contains `VITE_GEMINI_API_KEY=your_gemini_api_key_here`. Git ignores `.env`, `.env.local`, and other `.env.*` files. `.env.example` is the only env file that stays in the repo.
+`.env.example` sets that variable to `your_gemini_api_key_here`. Git ignores `.env`, `.env.local`, and other `.env.*` files except `.env.example`.
 
-> ⚠️ Vite inlines `VITE_*` variables into the built JavaScript, so anyone with your `dist/` folder can read the key. Use a personal, restricted key and don't publish a build that contains it.
+Vite inlines `VITE_*` values into the built JavaScript. Anyone with the `dist/` folder can read the key. Use a personal key and do not publish that build.
 
-### 3. Build
+### Build and load
 
 ```bash
-npm run build      # runs: tsc -b && vite build
+npm run build    # tsc -b && vite build
 ```
 
-This writes the unpacked extension to **`pawmodoro-dub/dist/`**. Vite copies `manifest.json`, `background.js`, the CSS files, images, and sounds from `public/` into it.
-
-### 4. Load it in Chrome
+The unpacked extension is `pawmodoro-dub/dist/`.
 
 1. Open `chrome://extensions`.
-2. Turn on **Developer mode** (top right).
-3. Click **Load unpacked** and select the `pawmodoro-dub/dist` folder.
-4. Pin **"Pawmadoro: Study Pet"** (manifest v1.0.0) from the puzzle-piece menu.
+2. Turn on **Developer mode**.
+3. Click **Load unpacked** and choose `pawmodoro-dub/dist`.
+4. Pin **Pawmadoro: Study Pet**.
 
-After any code change, run `npm run build` again and click the reload icon on the extension's card.
+After a code change, run `npm run build` again and click reload on the extension card.
 
-### Other scripts
+### Scripts
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Starts the Vite dev server. The UI calls `chrome.*` APIs, so it only works fully when loaded as an extension. |
-| `npm run build` | Type-checks and builds the extension into `dist/` |
-| `npm run lint` | Runs ESLint |
-| `npm run preview` | Serves the production build with Vite |
+| `npm run dev` | Vite dev server. `chrome.*` calls only work fully when the page is loaded as an extension. |
+| `npm run build` | Type-check and write `dist/` |
+| `npm run lint` | ESLint |
+| `npm run preview` | Serve the production build with Vite |
 
 ## Usage
 
-1. **Open the side panel.** Click Chrome's side panel button and pick Pawmodoro. On first run you'll see **Create Your Study Buddy!** Enter an animal and click **Create Pet**, then **SAVE**.
-2. **Add allowed sites.** In the side panel, click **Next -->** to open **Manage Allowed Websites** and add the hostnames you study on (for example `docs.google.com`). Hostnames must match exactly, so `www.notion.so` and `notion.so` count as different sites.
-3. **Start a session.** Press **Start** on the 25:00 timer. Press **Break** to switch to the 5:00 break timer and **Study** to come back.
-4. **Track tasks.** Click **<-- Back** to return to the to-do list. Add tasks and click one to complete it, and your pet celebrates.
-5. **Use the popup.** Click the toolbar icon for a quick view of the timer and your pet.
+1. Open the side panel and choose Pawmodoro. The first run shows **Create Your Study Buddy!** Enter an animal, click **Create Pet**, then **SAVE**.
+2. Click **Next -->** to open **Manage Allowed Websites** and add hostnames (for example `docs.google.com`).
+3. Press **Start** on the 25:00 timer. **Break** switches to 5:00. **Study** switches back.
+4. Click **<-- Back** for the to-do list. Add a task, then click it to complete it. The pet celebrates.
+5. Click the toolbar icon for the compact timer and pet.
 
-### Data stored locally
+### Keys in `chrome.storage.local`
 
-All data lives in `chrome.storage.local` under these keys: `pet` (name + four sprite data URLs), `allowedSites`, `onTaskStatus`, `savedTasks`, `celebrating`, `twentyFiveTimerState`, and `fiveTimerState`.
+`pet` (name and four sprite data URLs), `allowedSites`, `onTaskStatus`, `savedTasks`, `celebrating`, `twentyFiveTimerState`, `fiveTimerState`.
 
 ### Permissions
 
-| Permission | Why |
+| Permission | Why it is in the manifest |
 |---|---|
-| `storage` | Saves the pet, tasks, allowed sites, and timer state |
-| `tabs` | Reads the active tab's URL so the pet can react to on-task or off-task browsing |
-| `sidePanel` | Provides the full side-panel UI |
-| `scripting`, host permissions `http://*/*` and `https://*/*` | Declared in the manifest. The current code doesn't call `chrome.scripting`. |
+| `storage` | Pet, tasks, allowed sites, timer state |
+| `tabs` | Read the active tab URL for the on-task check |
+| `sidePanel` | Side panel UI |
+| `scripting`, `http://*/*`, `https://*/*` | Declared. The current code does not call `chrome.scripting`. |
 
-## Known limitations
+## Limits
 
-- **Pet creation currently fails.** `PetCreator.tsx` calls `imagen-3.0-generate-002`, and Google shut that model down on Nov 10, 2025. Until the request moves to a current image model, new pets can't be generated. Everything else (timer, to-do list, site tracking, a pet you already saved) still works.
-- **The timer only ticks while a Pawmodoro view is open.** It counts down inside the popup or side panel and catches up from a saved timestamp when you reopen it. Nothing notifies you when a session ends, and it doesn't switch phases on its own.
-- The study and break lengths are fixed at 25 and 5 minutes.
-- The popup and side panel each run their own copy of the timer. They share saved state when they load, not live.
-- If your allowed-sites list is empty, every website counts as off-task. Non-web pages such as `chrome://` count as on-task.
-- Tasks can be marked done or not done, but you can't delete them.
+- **New pets fail.** `PetCreator.tsx` calls `imagen-3.0-generate-002`. Google shut that model down on November 10, 2025 ([Gemini API release notes](https://ai.google.dev/gemini-api/docs/changelog)). The timer, to-do list, site check, and a pet already saved in storage still run.
+- **The clock runs only while a Pawmodoro view is open.** It catches up from the saved timestamp on the next open. Nothing notifies you at 0:00, and the phase does not advance on its own.
+- Study and break lengths are fixed at 25 and 5 minutes. Switching phases resets the timer you leave.
+- The popup and the side panel are separate pages. They share stored timer state when they load. They do not tick in lockstep.
+- An empty allowed-sites list makes every `http(s)` page off-task. `chrome://` and other non-web URLs count as on-task.
+- New tasks are written to `savedTasks`. Marking a task done or not done updates the list on screen and can start the celebration, and that completed flag is not written back. Tasks cannot be deleted.
 
-## Future work
+## Still open
 
-These ideas come from the open issues in the GitHub tracker:
+These items are still open on the GitHub tracker, and they are not implemented:
 
-- A background timer engine that keeps running with the popup closed
-- More pet states (bored, sleepy, sick) driven by focus streaks
-- A notes section next to the task list
+- A background timer that keeps running with the popup closed, plus badges and notifications ([#4](https://github.com/allyytc/Pawmodoro/issues/4))
+- More pet states (bored, sleepy, sick) tied to focus streaks ([#3](https://github.com/allyytc/Pawmodoro/issues/3))
+- A notes field next to the task list ([#5](https://github.com/allyytc/Pawmodoro/issues/5))
+
+The Devpost "What's next" section describes further ideas (more personalities, a distraction overlay, shared sessions). Those are plans on the project page, not code in this repo.
 
 ## Team
 
-Built at DubHacks 2025 by:
+DubHacks 2025. Every role is a **draft** inferred from commit history and needs confirmation.
 
-- **Ally Chen**: [@allyytc](https://github.com/allyytc)
-- **Alan Nguyen**: [@alnnguyen](https://github.com/alnnguyen)
-- **Alex Nguyen**: [@alwxngn](https://github.com/alwxngn)
+| Name | Draft role |
+|---|---|
+| Ally Chen ([@allyytc](https://github.com/allyytc)) | Draft: extension scaffold, popup and side panel, study and break phases, documentation |
+| Alan Nguyen ([@alnnguyen](https://github.com/alnnguyen)) | Draft: timer behavior, to-do list, allowed websites, manifest permissions, interface styling |
+| Alex Nguyen ([@alwxngn](https://github.com/alwxngn)) | Draft: Imagen pet generation, pet display and petting, on-task tab checks, icons and sounds |
 
-<!-- Add a License section once a LICENSE file is chosen. -->
+Git commits for Alan are authored as `ahlawnh` and `Alan Nguyen`. Git commits for Alex use the handle `alwxngn`. The Devpost page lists [mehulmuna](https://github.com/mehulmuna) (Munankarmi). That account has no commits in this repository, so no role is inferred here.
+
+This repository has no license file.

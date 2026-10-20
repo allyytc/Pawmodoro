@@ -1,4 +1,4 @@
-// First-run page: wraps PetCreator. After the user saves a pet, the page reloads into the main App view.
+// Side-panel first run. Saving a pet reloads the page so App can show the study view.
 import PetCreator from './PetCreator';
 
 export default function PetPage(){
