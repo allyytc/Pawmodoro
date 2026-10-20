@@ -4,6 +4,8 @@
 
 > Built at **DubHacks 2025** (October 2025).
 
+**Links:** [Devpost (DubHacks 2025)](https://devpost.com/software/pawmodoro-178q6z) · [Demo video (YouTube)](https://www.youtube.com/watch?v=KWkfedqEbig)
+
 ---
 
 ## Why we built it
@@ -33,10 +35,9 @@ Pomodoro timers help you focus, but they can feel dry. Pawmodoro gives you a sma
 | AI | Google **Gemini API / Imagen** (`imagen-3.0-generate-002`) for sprite generation |
 | Storage | `chrome.storage.local` |
 
-## Screenshots
+## Demo
 
-<!-- TODO: add screenshots or a short GIF, e.g. docs/screenshots/popup.png and docs/screenshots/sidepanel.png -->
-_Screenshots coming soon._
+[![Pawmodoro demo video](https://img.youtube.com/vi/KWkfedqEbig/maxresdefault.jpg)](https://www.youtube.com/watch?v=KWkfedqEbig)
 
 The repo already contains the art the UI uses: the side-panel background `pawmodoro-dub/public/images/bedroom.png`, the popup background `pawmodoro-dub/public/images/cabin.png`, and the extension icon `pawmodoro-dub/public/images/noodle.png`.
 
