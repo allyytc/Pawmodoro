@@ -41,7 +41,7 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
             }
         });
     }, []);
-// Save timer state to Chrome storage whenever seconds or isActive changes
+    // Save timer state to Chrome storage whenever seconds or isActive changes
     useEffect(() => {
         const timerState = {
             seconds: seconds,
@@ -60,16 +60,16 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
         }
         return () => { clearInterval(interval) };
     }, [isActive, seconds]);
-// Toggle between starting and pausing the timer
+    // Toggle between starting and pausing the timer
     const toggleTimer = () => {
         setIsActive(!isActive);
     };
-// Reset the timer to 25 minutes
+    // Reset the timer to 5 minutes
     const resetTimer = () => {
         setIsActive(false);
         setSeconds(300); // Reset to 5 minutes
     };
-// Format the time in MM:SS and use only integers
+    // Format the time in MM:SS and use only integers
     const formatTime = () => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
@@ -99,7 +99,7 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
         );
     }
 
-    //OG horizontal layout for the side panel
+    // Horizontal layout (side panel)
     return (
         <div className="text-center p-4">
             <h1 className="text-6xl text-white font-bold mb-4">{formatTime()}</h1>

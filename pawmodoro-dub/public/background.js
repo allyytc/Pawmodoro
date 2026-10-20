@@ -1,7 +1,8 @@
+// MV3 service worker: marks the active tab on-task/off-task against allowedSites
 const checkCurrentTab = (tab) => {
-//  make sure tab got a url
+    //  make sure tab got a url
     if (tab && tab.url && tab.url.startsWith('http')) {
-// extract the domain name
+        // extract the domain name
         const hostname = new URL(tab.url).hostname;
 
 

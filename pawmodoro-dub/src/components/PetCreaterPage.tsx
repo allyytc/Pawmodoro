@@ -1,5 +1,4 @@
-// This is the first page users enter to create their pet, then after pressing the save button, 
-// it directs users tot eh app.tsx which will become the main.
+// First-run page: wraps PetCreator. After the user saves a pet, the page reloads into the main App view.
 import PetCreator from './PetCreator';
 
 export default function PetPage(){

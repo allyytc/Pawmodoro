@@ -9,14 +9,10 @@ interface PetData {
     celebrateImg?: string;
 }
 
-
-
-
 const PetDisplay: React.FC = () => {
     // --- STATE MANAGEMENT ---
     // State to hold the pet's core data (name, images).
     const [pet, setPet] = useState<PetData | null>(null);
-    // State to remember if the pet should be happy or not. We'll default to happy.
     const [isHappy, setIsHappy] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -25,20 +21,15 @@ const PetDisplay: React.FC = () => {
     // boolean for celebrating
     const [isCelebrating, setIsCelebrating] = useState(false);
 
-    // using local file for the audio
     const meowAudioRef = useRef<HTMLAudioElement | null>(null);
     if (!meowAudioRef.current) {
-        
         meowAudioRef.current = new Audio(chrome.runtime.getURL('sounds/meow2.wav'));
     }
-
 
     // Load Data and Look for Changes
 
     // Runs once to load the pet's images and the initial on-task status.
     useEffect(() => {
-
-        // Ask for two things from storage at the same time.
         chrome.storage.local.get(['pet', 'onTaskStatus'], (result) => {
             if (result.pet) {
                 setPet(result.pet);
@@ -49,9 +40,9 @@ const PetDisplay: React.FC = () => {
             }
             setIsLoading(false);
         });
-    }, []); 
+    }, []);
 
-    // useEffect sets up a LISTENER that waits for the background script's messages.
+    // Listen for storage changes (onTaskStatus from background.js, celebrating from the to-do list)
     useEffect(() => {
         const handleStorageChange = (changes: { [key: string]: chrome.storage.StorageChange }, areaName: string) => {
             // We only care about changes to our 'onTaskStatus' key in local storage.
@@ -79,14 +70,10 @@ const PetDisplay: React.FC = () => {
         // Subscribe our function to Chrome's storage change event.
         chrome.storage.onChanged.addListener(handleStorageChange);
 
-        // This is a cleanup function. When the component disappears, unsubscribe the listener.
         return () => {
             chrome.storage.onChanged.removeListener(handleStorageChange);
         };
-    }, []); // Empty array `[]` ensures we only set up the listener once.
-
-
-    // new function to handle petting ---
+    }, []);
 
     const handlePet = () => {
 
@@ -100,10 +87,6 @@ const PetDisplay: React.FC = () => {
             setIsPetted(false);
         }, 1000); // reset after 1 second
     };
-    
-
-
-
 
     if (isLoading) {
         return <div className="text-white text-center p-4">Loading pet...</div>;
