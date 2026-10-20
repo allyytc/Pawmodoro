@@ -169,6 +169,6 @@ Built at DubHacks 2025 by:
 
 - **Ally Chen**: [@allyytc](https://github.com/allyytc)
 - **Alan Nguyen**: [@alnnguyen](https://github.com/alnnguyen)
-- [@alwxngn](https://github.com/alwxngn)
+- **Alex Nguyen**: [@alwxngn](https://github.com/alwxngn)
 
 <!-- Add a License section once a LICENSE file is chosen. -->
