@@ -1,4 +1,3 @@
-// import react hooks
 import { useState, useEffect } from "react"; 
 
 // define task structure

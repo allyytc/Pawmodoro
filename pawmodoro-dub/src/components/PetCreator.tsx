@@ -101,7 +101,7 @@ const PetCreator: React.FC = () => {
         setError('');
 
         try {
-            // --- All of the Gemini API prompts for different pet states 
+            // Imagen prompts for each pet state
             const happyPrompt = `Pixel art sprite of a happy, cute ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
             const madPrompt = `Pixel art sprite of an angry, mad ${animalInput}, full body, sitting pose. PNG with alpha channel transparency, no background, isolated on transparent.`;
             const pettedPrompt = `Pixel art sprite of a human hand petting a cute, happy pixel art${animalInput}. PNG with alpha channel transparency, no background, isolated on transparent.`;
@@ -134,15 +134,11 @@ const PetCreator: React.FC = () => {
                 celebrateImg: `data:image/png;base64,${celebrateClean}`
             };
 
-            // chrome storage set
-
             chrome.storage.local.set({ pet: petData }, () => {
                 console.log("Pet data saved successfully!", petData);
                 setSavedPet(petData);
             });
            
-            // catch any errors and display message
-
         } catch (err) {
             console.error("Pet creation failed:", err);
             setError(err instanceof Error ? err.message : 'An unknown error occurred.');
@@ -162,7 +158,7 @@ const PetCreator: React.FC = () => {
                     <img src={savedPet.happyImg} alt={`Your pet, ${savedPet.name}`} className="w-full h-full object-contain" />
                 </div>
 
-                {/* this button will save the pet to chrome */}
+                {/* Pet is already saved; reload into the main view */}
 
                 <button
                     onClick={() => {

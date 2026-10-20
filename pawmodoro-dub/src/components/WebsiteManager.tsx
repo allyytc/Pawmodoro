@@ -35,7 +35,7 @@ export default function WebsiteManager() {
     saveSites(newSites);
     setInputText(''); // Clear input after adding
   };
-/// Removing sites
+  // Remove a site
   const handleRemoveSite = (siteToRemove: string) => {
     const newSites = sites.filter(site => site !== siteToRemove);
     saveSites(newSites);
