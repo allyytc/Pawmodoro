@@ -1,7 +1,13 @@
-# pawmodoro-dub (extension source)
+# pawmodoro-dub
 
-See the [root README](../README.md) for the overview, setup, and usage.
+Chrome extension source (Vite, React, TypeScript). Overview, setup, and usage are in the [root README](../README.md).
 
-Quick dev loop: `npm install` → copy `.env.example` to `.env.local` and set `VITE_GEMINI_API_KEY` → `npm run build` → load `dist/` at chrome://extensions → click reload after each build.
+```bash
+npm install
+cp .env.example .env.local   # set VITE_GEMINI_API_KEY
+npm run build                # writes dist/
+```
 
-Entry: `index.html?view=popup|sidepanel` → `src/App.tsx`. Static extension files live in `public/`.
+Load `dist/` from `chrome://extensions` (Developer mode, then Load unpacked). Rebuild and click reload on the extension card after code changes.
+
+`index.html?view=popup` is the toolbar popup. `index.html?view=sidepanel` is the side panel. Files in `public/` are copied into the build.

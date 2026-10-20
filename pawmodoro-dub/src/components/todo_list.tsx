@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"; 
 
-// define task structure
 interface Task {
     id: number;
     text: string;
@@ -8,11 +7,9 @@ interface Task {
 }
 
 export default function TodoList() {
-    // state to hold tasks and input text
     const [tasks, setTasks] = useState<Task[]>([]);
     const [inputText, setInputText] = useState("");
 
-//logic for loading and saving tasks
     useEffect(() => {
         if (chrome.storage && chrome.storage.local) {
             chrome.storage.local.get(['savedTasks'], (result) => {
@@ -21,16 +18,13 @@ export default function TodoList() {
                 }
             });
         }
-    }, []); // The empty array [] means this effect runs only once
+    }, []);
 
-    //helper function to save tasks to storage and update the state
     const saveTasks = (newTasks: Task[]) => {
         setTasks(newTasks);
         chrome.storage.local.set({ savedTasks: newTasks });
     };
 
-    // functions to handle adding and toggling tasks
-    // add new task
     const handleAddTask = () => {
         if (inputText.trim() === "") return;
 
@@ -42,15 +36,14 @@ export default function TodoList() {
         saveTasks([...tasks, newTask]);
         setInputText('');
     };
-    // toggle task completion and trigger celebration if completed
+    // Completing a task (not unchecking it) tells PetDisplay to celebrate.
+    // The completed flag itself is not written to savedTasks.
     const handleToggleTask = (id: number) => {
         setTasks(
             tasks.map(task => {
                 if (task.id === id && !task.completed) {
-                    // Task is being completed! Trigger celebration
                     console.log("Task completed! Celebrating...");
                     chrome.storage.local.set({ celebrating: true }, () => {
-                        // Auto-remove celebration flag after 3 seconds
                         setTimeout(() => {
                             chrome.storage.local.remove('celebrating');
                         }, 3000);
@@ -61,14 +54,12 @@ export default function TodoList() {
         );
        
     };
-    // handle enter key press in input box
     const handleKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === "Enter") {
             handleAddTask();
         }
     };
 
-    // ui for todo list plus functions
     return (
         <div className="p-4 bg-white/20 rounded-lg">
             <h2 className="text-2xl text-white font-bold mb-4">To-Do List</h2>

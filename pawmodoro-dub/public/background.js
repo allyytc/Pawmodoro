@@ -1,8 +1,7 @@
-// MV3 service worker: marks the active tab on-task/off-task against allowedSites
+// http(s) tabs are on task only when the hostname is in allowedSites.
+// chrome:// pages and tabs with no URL count as on task.
 const checkCurrentTab = (tab) => {
-    //  make sure tab got a url
     if (tab && tab.url && tab.url.startsWith('http')) {
-        // extract the domain name
         const hostname = new URL(tab.url).hostname;
 
 
@@ -24,15 +23,11 @@ const checkCurrentTab = (tab) => {
     }
 };
 
-// switching to a different tab
-
 chrome.tabs.onActivated.addListener((activeInfo) => {
     chrome.tabs.get(activeInfo.tabId, (tab) => {
         checkCurrentTab(tab);
     });
 });
-
-// checking when users tab changes
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 

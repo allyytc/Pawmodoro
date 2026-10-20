@@ -8,7 +8,7 @@ interface TimerProps {
 export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: TimerProps) {
     
     const handleSwitchToStudy = () => {
-        // Stop and reset the 5-minute timer before switching
+        // Clear this countdown before the study timer takes over.
         setIsActive(false);
         setSeconds(300);
         chrome.storage.local.set({ 
@@ -23,13 +23,14 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
             onSwitchTimer();
         }
     };
-    const [seconds, setSeconds] = useState(300); //5 mins
+    const [seconds, setSeconds] = useState(300); // 5 minutes
     const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
         chrome.storage.local.get(['fiveTimerState'], (result) => {
             if (result.fiveTimerState) {
                 const savedState = result.fiveTimerState;
+                // If it was running, subtract the time spent while this view was closed.
                 const timeElapsedInSeconds = (Date.now() - savedState.timestamp) / 1000;
                 if (savedState.isActive) {
                     const newSeconds = Math.max(0, savedState.seconds - timeElapsedInSeconds);
@@ -41,7 +42,7 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
             }
         });
     }, []);
-    // Save timer state to Chrome storage whenever seconds or isActive changes
+    // Write every tick so a later open can catch up.
     useEffect(() => {
         const timerState = {
             seconds: seconds,
@@ -60,25 +61,22 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
         }
         return () => { clearInterval(interval) };
     }, [isActive, seconds]);
-    // Toggle between starting and pausing the timer
     const toggleTimer = () => {
         setIsActive(!isActive);
     };
-    // Reset the timer to 5 minutes
     const resetTimer = () => {
         setIsActive(false);
-        setSeconds(300); // Reset to 5 minutes
+        setSeconds(300);
     };
-    // Format the time in MM:SS and use only integers
+    // Catch-up can leave a fraction. Show whole seconds.
     const formatTime = () => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
     };
 
-    // Conditionally render the UI based on the layout prop
+    // Popup passes layout="vertical". The side panel uses the horizontal default.
     if (layout === 'vertical') {
-        // vertical layout
         return (
             <div className="flex items-center justify-center p-4">
                 <div className="flex flex-col space-y-2 mr-4">
@@ -99,7 +97,6 @@ export default function FiveTimer({ layout = 'horizontal', onSwitchTimer }: Time
         );
     }
 
-    // Horizontal layout (side panel)
     return (
         <div className="text-center p-4">
             <h1 className="text-6xl text-white font-bold mb-4">{formatTime()}</h1>

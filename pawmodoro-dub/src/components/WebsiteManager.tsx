@@ -1,41 +1,32 @@
 import React, { useState, useEffect } from 'react';
 
 export default function WebsiteManager() {
-  // State for the list of websites
   const [sites, setSites] = useState<string[]>([]);
-  
-  // State for the text in the input box
   const [inputText, setInputText] = useState('');
 
-  
-
-  // Load saved sites from Chrome storage when the component first loads
   useEffect(() => {
     chrome.storage.local.get(['allowedSites'], (result) => {
       if (result.allowedSites) {
         setSites(result.allowedSites);
       }
     });
-  }, []); // The empty array [] means this effect runs only once
-  
-  // Function to save the list to Chrome storage
+  }, []);
+
   const saveSites = (newSites: string[]) => {
     setSites(newSites);
     chrome.storage.local.set({ allowedSites: newSites });
   };
 
-  // Adding sites
-
   const handleAddSite = () => {
     if (inputText.trim() === '' || sites.includes(inputText.trim())) {
       setInputText('');
-      return; // Prevent adding empty or duplicate sites
+      return;
     }
     const newSites = [...sites, inputText.trim()];
     saveSites(newSites);
-    setInputText(''); // Clear input after adding
+    setInputText('');
   };
-  // Remove a site
+
   const handleRemoveSite = (siteToRemove: string) => {
     const newSites = sites.filter(site => site !== siteToRemove);
     saveSites(newSites);
@@ -47,16 +38,12 @@ export default function WebsiteManager() {
     }
   };
 
-  //UI and functions
-
   return (
     <div className="p-4 bg-white/20 rounded-lg">
-      {/* Title for the section */}
       <h2 className="font-semibold text-white text-lg mb-4">
         Manage Allowed Websites
       </h2>
       <div>
-        {/* Input section */}
         <div className="flex mb-4 text-white">
           <input
             type="text"
@@ -74,7 +61,6 @@ export default function WebsiteManager() {
           </button>
         </div>
 
-        {/* List of saved sites */}
         <ul className="space-y-2 max-h-40 overflow-y-auto">
           {sites.map(site => (
             <li

@@ -11,7 +11,7 @@ function App() {
   const view = urlParams.get('view');
   const isSidePanel = view === 'sidepanel';
   const [hasPet, setHasPet] = useState(false);
-  const [activeTimer, setActiveTimer] = useState<'study' | 'break'>('study'); // Track which timer is active
+  const [activeTimer, setActiveTimer] = useState<'study' | 'break'>('study');
   
   useEffect(()=>{
     chrome.storage.local.get(['pet'], (result)=>{
@@ -24,7 +24,7 @@ function App() {
     })
   },[]
   )
-  // SIDE PANEL VIEW 
+  // Side panel: pet creator until a pet is saved, then the full study view.
   if (isSidePanel) {
     if (hasPet===false){
       return <PetPage />;
@@ -55,7 +55,7 @@ function App() {
       </div>
     );
   }
-  // POPUP VIEW
+  // Popup: compact timer and pet. This CSS import runs only on the popup path.
   import('../public/popup.css');
   
   return (
